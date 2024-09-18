@@ -1,0 +1,111 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+:root {
+    --main-bg: #262626;
+    --main-char-color: #FFFFF2;
+}
+
+body {
+    background: var(--main-bg);
+    color: var(--main-char-color);
+    width: 100%;
+}
+
+.container {
+    width: clamp(300px, 90%, 800px);
+    margin: 0 auto;
+}
+
+.settings {
+    width: 100%;
+    height: 5svh;
+    position: relative;
+}
+
+.settings span {
+    position: absolute;
+    top: 75%;
+    --side: 2.5%;
+}
+
+.settings span:nth-of-type(1) {
+    left: var(--side);
+}
+
+.settings span:nth-of-type(2) {
+    right: var(--side);
+}
+
+.identification {
+    height: 95svh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2.5em;
+}
+
+.identification div {
+    width: clamp(280px, 80%, 500px);
+    position: relative;
+}
+
+.identification div span {
+    position: absolute;
+    top: 50%;
+    right: 5%;
+    translate: 0 -50%;
+}
+
+.identification input {
+    background: var(--main-bg);
+    color: var(--main-char-color);
+    border: 0;
+    outline: 0;
+    padding-left: 5%;
+    padding-right: 15%;
+    width: 100%;
+    height: 60px;
+    border: 1px solid var(--main-char-color);
+    border-radius: 10px;
+    font-size: 1.25em;
+}
+
+.identification a {
+    color: var(--main-char-color);
+}
+
+label {
+    position: absolute;
+    left: 5%;
+    top: -25%;
+    background: var(--main-bg);
+    padding: 0.25em 0.5em;
+}
+
+button {
+    height: 60px;
+    width: 100%;
+    font-weight: 600;
+    padding: 0.5em;
+    border-radius: 10px;
+    font-size: 1.25em;
+}
+
+.material-symbols-outlined {
+    font-variation-settings:
+    'FILL' 1,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
+}
+
+.loginForm {
+    display: none;
+}

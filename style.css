@@ -9,6 +9,8 @@
     --secondary-bg: #262626;
     --main-bg: #0B1215;
     --main-char-color: #FFFFF2;
+    --off-focus-input: #9A9A9A;
+    --on-focus-memo: #333333;
 }
 
 body {
@@ -22,7 +24,7 @@ body {
     margin: 0 auto;
 }
 
-.settings {
+#navMenu {
     width: clamp(300px, 95%, 800px);
     height: 10svh;
     position: fixed;
@@ -32,9 +34,17 @@ body {
     align-items: center;
 }
 
-.settings div:nth-of-type(2) {
+#backBtn {
+    display: none;
+}
+
+#navOptionsDiv {
     display: flex;
     gap: 1.5em;
+}
+
+#deleteBtn {
+    display: none;
 }
 
 .identification, .addedElements {
@@ -64,18 +74,25 @@ body {
     translate: 0 -50%;
 }
 
+input {
+    color: var(--main-char-color);
+    border-radius: 10px;
+    border: 1px solid var(--off-focus-input);
+    font-size: 1.25em;
+    transition: border 0.25s ease;
+}
+
+input:focus {
+    border: 1px solid var(--main-char-color);
+}
+
 .identification input {
     background: var(--main-bg);
-    color: var(--main-char-color);
-    border: 0;
-    outline: 0;
+    outline: var(--main-char-color);
     padding-left: 5%;
     padding-right: 15%;
     width: 100%;
     height: 60px;
-    border: 1px solid var(--main-char-color);
-    border-radius: 10px;
-    font-size: 1.25em;
 }
 
 .identification a {
@@ -131,11 +148,9 @@ button {
 #userInput {
     width: 85%;
     height: 50px;
-    border-radius: 10px;
     background: var(--secondary-bg);
-    border: 1px solid var(--main-char-color);
-    color: var(--main-char-color);
     outline: 0;
+    padding: 0 2.5%;
 }
 
 #userInput:not(:placeholder-shown) ~ #btnSend {
@@ -169,4 +184,8 @@ button {
     border-radius: 10px;
     height: max-content;
     outline: 0;
+}
+
+[data-selected = "true"] {
+    background: var(--on-focus-memo) !important;
 }

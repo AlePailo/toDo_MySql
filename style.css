@@ -11,6 +11,7 @@
     --main-char-color: #FFFFF2;
     --off-focus-input: #9A9A9A;
     --on-focus-memo: #333333;
+    --details : #0047b3;
 }
 
 body {
@@ -153,6 +154,10 @@ button {
     padding: 0 2.5%;
 }
 
+#userInput:focus {
+    border-color: var(--details);
+}
+
 #userInput:not(:placeholder-shown) ~ #btnSend {
     display: block;
 }
@@ -167,7 +172,7 @@ button {
 
 
 #userInputsDiv span {
-    background: green;
+    background: var(--details);
     padding: 10px;
     border-radius: 50%;
 }
@@ -184,8 +189,34 @@ button {
     border-radius: 10px;
     height: max-content;
     outline: 0;
+    position: relative;
 }
 
 [data-selected = "true"] {
     background: var(--on-focus-memo) !important;
+}
+
+#profileBtn {
+    position: relative;
+}
+
+#profileBtn div {
+    position: absolute;
+    right: 25%;
+    padding: 0.25em;
+    border-radius: 10px;
+    top: 150%;
+    font-size: 0.8em;
+    border: 1px solid var(--main-char-color);
+    background: var(--secondary-bg);
+    display: none;
+}
+
+.checkSelect {
+    position: absolute;
+    top: -12.5%;
+    right: -5%;
+    transform: scale(1.35);
+    accent-color: var(--details);
+    display: none;
 }

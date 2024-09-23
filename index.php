@@ -16,7 +16,9 @@
             </div>
             <div id="navOptionsDiv">
                 <span id="deleteBtn" class="material-symbols-outlined">delete</span>
-                <span id="optionsBtn" class="material-symbols-outlined">settings</span>
+                <span id="profileBtn" class="material-symbols-outlined">account_circle
+                    <div>Esci</div>
+                </span>
             </div>
         </article>
         <form class="identification loginForm" action="#">

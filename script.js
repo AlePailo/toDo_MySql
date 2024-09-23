@@ -5,13 +5,11 @@ $(document).ready(function() {
     })
 
     $(".addedElements").on("click", "p", function(){
-        $(this).attr("contentEditable", "true")
-        $(this).focus()
         saveMemoValue($(this).text())
     })
 
     $(".addedElements").on("blur", "p", function(){
-        $(this).attr("contentEditable", "false")
+        $(this).attr("contentEditable", false)
         checkMemoValueVariations($(this).text())
     })
 
@@ -21,13 +19,31 @@ $(document).ready(function() {
 
     $(".addedElements").on("touchend", ".memoNote", function() {
         tapEnd($(this))
+
+        //GETS RID OF FIRST CLICK CHECKBOX BUG (REMOVE THIS AND TRY TO UNCHECK A CHECKBOX TO SEE)
+        event.preventDefault()
     })
 
     $("#backBtn").click(function() {
         resetSelection()
     })
 
-    
+    $("#profileBtn").click(function() {
+        $("#profileBtn div").toggle()
+    })
+
+    $(".addedElements").on("change", "input.checkSelect", function(){
+        /*if($(this).attr("display") === "none") {
+            return
+        }
+        if($(this).attr("checked") === "checked") {
+            alert("SIUM")
+            $(this).attr("checked", undefined)
+        } else {
+            $(this).attr("checked", "checked")
+        }*/
+    })
+
     //localStorage.setItem("timer", null)
 
 })
@@ -36,13 +52,18 @@ $(document).ready(function() {
 //MEMO ELEMENT CREATION BASED ON USER INPUT
 
 function createMemo(text) {
-    $('<p/>',{
+    const el = $('<p/>',{
         text: text,
         class: "memoNote"
     }).attr("spellcheck", "false")
-    .attr("data-selected", "false")
+    .attr("data-selected", false)
     .appendTo('.addedElements')
     $("#userInput").val("")
+
+    $('<input>',{
+        class: "checkSelect"
+    }).attr("type", "checkbox")
+    .appendTo(el)
 }
 
 
@@ -70,15 +91,31 @@ let timer = null
 //LONG TAP LOGIC
 
 function tapStart(el) {
-    el.attr("data-selected", "true")
-    localStorage.setItem("longPress", false)
+
+    if(!el.attr("data-selected") == "true") {
+        el.attr("data-selected", true)
+    }
+    console.log(localStorage.getItem("itemsSelected"))
+    if(localStorage.getItem("itemsSelected") != true) {
+        localStorage.setItem("longPress", false)
+    } else {
+        el.find("input").toggle()
+        if(el.attr("checked") == true) {
+            el.attr("checked") = false
+        } else {
+            el.attr("checked") = true
+        }
+    }
+
     timer = setTimeout(() => {
         timer = null
         $("#backBtn").css("display", "inline-block")
         $("#deleteBtn").css("display", "inline-block")
-        //el.attr("data-selected", "true")
         console.log("half second passed")
         localStorage.setItem("longPress", true)
+        localStorage.setItem("itemsSelected", true)
+        $(".memoNote input:checkbox").show()
+        el.children("input").attr("checked", true)
     }, 500)
 }
 
@@ -90,11 +127,44 @@ function tapEnd(el) {
     clearTimer()
     console.log(localStorage.getItem("longPress"))
     const isLongPressed = localStorage.getItem("longPress")
-    if(isLongPressed == "true") {
-        el.attr("data-selected", "true")
+    const itemsSelected = localStorage.getItem("itemsSelected")
+    
+    /*if(isLongPressed == true || localStorage.getItem("itemsSelected") == true) {
+        el.attr("data-selected", true)
     } else {
-        el.attr("data-selected", "false")
+        el.attr("data-selected", false)
+        $(this).attr("contentEditable", true)
+        $(this).focus()
+    }*/
+    console.log("itemsSelected : " + localStorage.getItem("itemsSelected"))
+    if(itemsSelected == "true") {
+        if(el.attr("data-selected") == "true") {
+            el.attr("data-selected", false)
+            el.find("input").removeAttr("checked")
+            let checks = 0
+            $(".memoNote input:checkbox").each(function(index, value) {
+                if($(this).attr("checked")) {
+                    checks++
+                    console.log("check n" + index)
+                }
+            })
+            if(checks == 0) {
+                resetSelection()
+            }
+        } else {
+            el.attr("data-selected", true)
+            el.find("input").attr("checked", "checked")
+        }
+    } else if(isLongPressed == "true") {
+        el.attr("data-selected", true)
+    } else {
+        el.attr("data-selected", false)
+        el.attr("contentEditable", true)
+        $(this).focus()
     }
+
+
+
     //localStorage.getItem("longPress") === true ? el.attr("data-selected", "true") : el.attr("data-slected", "false")
     //el.attr("userSelected") === "true" ? el.css("background", "var(--on-focus-memo)") : el.css("background", "var(--secondary-bg)")
 }
@@ -102,7 +172,12 @@ function tapEnd(el) {
 function resetSelection() {
     $("#deleteBtn").css("display", "none")
     $("#backBtn").css("display", "none")
-    $(".memoNote").attr("data-selected", "false")
+    $(".memoNote").attr("data-selected", false)
+    $(".memoNote input").hide().removeAttr("checked")
+    localStorage.setItem("itemsSelected", false)
+
+
+
     //$(".memoNote").attr("userSelected") === "true" ? $(this).css("background", "var(--on-focus-memo)") : $(this).css("background", "var(--secondary-bg)")
     //el.css("background", "var(--secondary-bg)")
 }

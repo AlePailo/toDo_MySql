@@ -1,3 +1,4 @@
+<?php require_once("functions.php"); ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,7 +22,7 @@
                 </span>
             </div>
         </article>
-        <form class="identification loginForm" action="#">
+        <form class="identification loginForm" id="loginForm" action="#" method="POST">
             <div>
                 <input type="email" name="loginEmail" id="loginEmail" required>
                 <label for="loginEmail">E-mail :</label>
@@ -37,7 +38,7 @@
             </div>
             <a href="#">Non hai un account? Registrati</a>
         </form>
-        <form class="identification registrationForm" action="#">
+        <form class="identification registrationForm" id="registrationForm" action="#" method="POST">
             <div>
                 <input type="text" name="registrationUsername" id="registrationUsername" required>
                 <label for="registrationUsername">Nome Utente :</label>

@@ -1,4 +1,5 @@
-<?php require_once("functions.php"); ?>
+<?php require_once("functions.php");
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,7 +23,7 @@
                 </span>
             </div>
         </article>
-        <form class="identification loginForm" id="loginForm" action="#" method="POST">
+        <form class="identification loginForm" id="loginForm" method="POST">
             <div>
                 <input type="email" name="loginEmail" id="loginEmail" required>
                 <label for="loginEmail">E-mail :</label>
@@ -34,11 +35,11 @@
                 <span class="material-symbols-outlined">lock</span>
             </div>
             <div>
-                <button id="btnLogin" type="submit">LOGIN</button>
+                <button id="btnLogin" type="button">LOGIN</button>
             </div>
             <a href="#">Non hai un account? Registrati</a>
         </form>
-        <form class="identification registrationForm" id="registrationForm" action="#" method="POST">
+        <form class="identification registrationForm" id="registrationForm" method="POST">
             <div>
                 <input type="text" name="registrationUsername" id="registrationUsername" required>
                 <label for="registrationUsername">Nome Utente :</label>
@@ -55,7 +56,7 @@
                 <span class="material-symbols-outlined">lock</span>
             </div>
             <div>
-                <button id="btnRegistration" type="submit">REGISTRATI</button>
+                <button id="btnRegistration" type="button">REGISTRATI</button>
             </div>
         </form>
         <article class="addedElements">
@@ -65,6 +66,7 @@
                 <span id="btnSend" class="material-symbols-outlined">send</span>
             </div>
         </article>
+        <p id="formNotification"></p>
     </section>
 
     <script src="script.js"></script>

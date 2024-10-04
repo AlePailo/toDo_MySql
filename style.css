@@ -127,11 +127,26 @@ button {
 }
 
 .loginForm {
-    display: none;
+    /*display: none;*/
 }
 
 .registrationForm {
     display: none;
+}
+
+#formNotification {
+    display: none;
+    position: fixed;
+    background: var(--secondary-bg);
+    color: var(--main-char-color);
+    border-radius: 5px;
+    bottom: 10%;
+    font-size: 1.1rem;
+    text-align: center;
+    padding: 1rem 2rem;
+    width: max-content;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 #userInputsDiv {
@@ -178,6 +193,7 @@ button {
 }
 
 .addedElements {
+    display: none;
     gap: 20px;
     align-items: flex-start;
     align-content: flex-start;

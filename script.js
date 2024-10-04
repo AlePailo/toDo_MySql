@@ -32,6 +32,10 @@ $(document).ready(function() {
         $("#profileBtn div").toggle()
     })
 
+    $("input").focus(function() {
+        $("#formNotification").hide()
+    })
+
     $(".addedElements").on("change", "input.checkSelect", function(){
         /*if($(this).attr("display") === "none") {
             return
@@ -46,7 +50,103 @@ $(document).ready(function() {
 
     //localStorage.setItem("timer", null)
 
+    /*$(".registrationForm").submit(function(e) {
+        const username = $("#registrationUsername").val()
+        const email = $("#registrationEmail").val()
+        const psw = $("#registrationPsw").val()
+        
+        e.preventDefault()
+
+        $.ajax({
+            context: this,
+            type : "POST",
+            url : "functions.php",
+            data : {
+                regAttemptUsername : username
+            },
+            success: function(data, e) {
+                console.log(data)
+                if(JSON.parse(data) == true) {
+                    $("#formNotification").show().text("Username già in uso").css("background", "#BB0A21")
+                    return
+                }
+
+                $.ajax({
+                    type : "POST",
+                    url : "functions.php",
+                    data : {
+                        regAttemptEmail : email
+                    },
+                    success: function(data, e) {
+                        console.log(data)
+                        if(JSON.parse(data) == true) {
+                            $("#formNotification").show().text("Email già in uso").css("background", "#BB0A21")
+                            return
+                        }
+                    }
+                })
+                this.submit()
+                //this.style.display = "none"
+                $(".addedElements").show()
+            }
+        })
+    })*/
+
+    $("#btnLogin").submit(function() {
+        const email = $("#loginEmail").val()
+        const psw = $("#loginPsw").val()
+
+        $.ajax({
+            type : "POST",
+            url : "function.php",
+            data : {
+                loginAttemptEmail : email,
+                loginAttemptPsw : psw
+            },
+            success: function(data) {
+                data = JSON.parse(data)
+                if(data == "Credenziali errate") {
+                    $("#formNotification").show().text(data).css("background", "#BB0A21")
+                    return false
+                }
+            }
+        })
+    })
+    
+    $("#btnRegistration").click(function() {
+        const username = $("#registrationUsername").val()
+        const email = $("#registrationEmail").val()
+        const psw = $("#registrationPsw").val()
+
+        $.ajax({
+            type : "POST",
+            url : "functions.php",
+            data : {
+                regAttemptUsername : username,
+                regAttemptEmail : email,
+                regAttemptPsw : psw
+            },
+            success : function(data) {
+                data = JSON.parse(data)
+                if(data != "Valid") {
+                    $("#formNotification").show().text(data).css("background", "#BB0A21")
+                    return false
+                }
+                sendForm()
+            }
+        })
+    })
+
+    $("#registrationForm").submit(function() {
+        $(this).hide(1000)
+    })
+
 })
+
+function sendForm() {
+    console.log($("#registrationForm"))
+    $("#registrationForm").submit()
+}
 
 
 //MEMO ELEMENT CREATION BASED ON USER INPUT

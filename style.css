@@ -96,8 +96,8 @@ input:focus {
     height: 60px;
 }
 
-.identification a {
-    color: var(--main-char-color);
+.identification p {
+    text-decoration: underline;
 }
 
 label {
@@ -216,16 +216,26 @@ button {
     position: relative;
 }
 
-#profileBtn div {
+#profileInfos {
     position: absolute;
-    right: 25%;
-    padding: 0.25em;
+    width: 300px;
+    top: 80%;
+    right: 2.5%;
+    padding: 1em;
     border-radius: 10px;
-    top: 150%;
-    font-size: 0.8em;
+    text-align: center;
+    font-size: 1.5em;
     border: 1px solid var(--main-char-color);
     background: var(--secondary-bg);
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    gap: 0.75em;
     display: none;
+}
+
+#profileInfos p {
 }
 
 .checkSelect {

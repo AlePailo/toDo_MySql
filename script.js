@@ -1,4 +1,6 @@
 $(document).ready(function() {
+    
+    getSessionVariables()
 
     $("#btnSend").click(function() {
         createMemo($("#userInput").val())
@@ -24,17 +26,55 @@ $(document).ready(function() {
         event.preventDefault()
     })
 
+    $("#btnLogOut").click(function() {
+        alert("HI")
+        logOut()
+    })
+
     $("#backBtn").click(function() {
         resetSelection()
     })
 
     $("#profileBtn").click(function() {
-        $("#profileBtn div").toggle()
+        if($("#profileInfos").css("display") === "none") {
+            $("#profileInfos").css("display", "flex")
+        } else {
+            $("#profileInfos").css("display", "none")
+        }
     })
 
     $("input").focus(function() {
         $("#formNotification").hide()
     })
+
+    $("#linkToRegistration").click(function() {
+        $("#loginForm").hide()
+        $("#registrationForm").css("display", "flex")
+    })
+
+    $("input ~ span").click(function() {
+        let input = $(this).siblings("input")
+        input.focus()
+        setCursorAtInputEnd(input[0])
+
+        if($(this).text() === "visibility_off") {
+            $(this).text("visibility")
+            $(this).siblings("input").attr("type", "text")
+        } else {
+            $(this).text("visibility_off")
+            $(this).siblings("input").attr("type", "password")
+        }
+    })
+
+    /*$("input[type='password']").focus(function() {
+        $(this).siblings("span").text("visibility_off")
+    })
+
+    $("input[type='password']").blur(function() {
+        if($(this).val() === "") {
+            $(this).siblings("span").text("lock")
+        }
+    })*/
 
     $(".addedElements").on("change", "input.checkSelect", function(){
         /*if($(this).attr("display") === "none") {
@@ -92,23 +132,26 @@ $(document).ready(function() {
         })
     })*/
 
-    $("#btnLogin").submit(function() {
+    $("#btnLogin").click(function() {
         const email = $("#loginEmail").val()
         const psw = $("#loginPsw").val()
 
         $.ajax({
             type : "POST",
-            url : "function.php",
+            url : "functions.php",
             data : {
                 loginAttemptEmail : email,
                 loginAttemptPsw : psw
             },
             success: function(data) {
                 data = JSON.parse(data)
-                if(data == "Credenziali errate") {
+                console.log(data)
+                if(data !== "Logged in successfully") {
                     $("#formNotification").show().text(data).css("background", "#BB0A21")
                     return false
                 }
+                $("#loginForm").hide()
+                $(".addedElements").css("display", "flex")
             }
         })
     })
@@ -280,4 +323,55 @@ function resetSelection() {
 
     //$(".memoNote").attr("userSelected") === "true" ? $(this).css("background", "var(--on-focus-memo)") : $(this).css("background", "var(--secondary-bg)")
     //el.css("background", "var(--secondary-bg)")
+}
+
+function getSessionVariables() {
+    $.ajax({
+        type: "POST",
+        url: "functions.php",
+        data: {
+            GetSessionVariables : "true" 
+        },
+        success : function(data) {
+            data = JSON.parse(data)
+            if(data === true) {
+                $("#loginForm").hide()
+                $(".addedElements").css("display", "flex")
+                console.log(document.cookie)
+                let cookieStr = document.cookie
+                let email = cookieStr.substring(
+                    cookieStr.indexOf("=") + 1, 
+                    cookieStr.indexOf(";")
+                )
+                let username = document.cookie.substring(
+                    cookieStr.lastIndexOf("=") + 1,
+                    cookieStr.length
+                )
+                email = email.replace("%40", "@")
+                console.log(email)
+                console.log(username)
+                $("#profileInfos p:first").text(email)
+                $("#profileInfos p:last").text(username)
+
+            } else {
+                //alert("Not logged in")
+            }
+        }
+    })
+}
+
+function setCursorAtInputEnd(input) {
+    let sel = window.getSelection();
+    sel.selectAllChildren(input);
+    sel.collapseToEnd();
+}
+
+function logOut() {
+    $.ajax({
+        type : "GET",
+        url : "functions.php?action=logout",
+        success: function() {
+            location.reload()
+        }
+    })
 }

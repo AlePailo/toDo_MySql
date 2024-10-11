@@ -44,12 +44,32 @@ function registerUser($username, $email, $psw, $pdo) {
 }
 */
 
+if(isset($_GET["action"]) && $_GET["action"] == "logout") {
+    setcookie("username",  "", time() - 3600);
+}
+
+if(isset($_POST["GetSessionVariables"])) {
+    checkLoginCookie();
+}
+
+function checkLoginCookie() {
+    echo json_encode(isset($_COOKIE["username"]));
+}
+
 if(isset($_POST["regAttemptUsername"])) {
     checkValidity($pdo, $_POST["regAttemptUsername"], $_POST["regAttemptEmail"], $_POST["regAttemptPsw"]);
 }
 
 if(isset($_POST["registrationEmail"])) {
     registerUser($_POST["registrationUsername"], $_POST["registrationEmail"], $_POST["registrationPsw"], $pdo);
+}
+
+if(isset($_POST["loginAttemptEmail"])) {
+    if(checkLoginFormValidity($pdo, $_POST["loginAttemptEmail"], $_POST["loginAttemptPsw"]) != "valid") {
+        echo json_encode("BOBBY");
+        return;
+    }
+    login($pdo, $_POST["loginAttemptEmail"], $_POST["loginAttemptPsw"]);
 }
 
 
@@ -103,25 +123,24 @@ function checkIfAlreadyExistsUser($pdo, $username) {
 function registerUser($username, $email, $psw, $pdo) {
     $stmt = $pdo->prepare('INSERT INTO users(email, username, psw) VALUES (?,?,?)');
     $stmt->execute([$email, $username, $psw]);
-    startSession($username, $email);
+    setLoginCookie($username, $email);
 }
 
-function startSession($username, $email) {
-    session_start();
-    $_SESSION["username"] = $username;
-    $_SESSION["email"] = $email;
+function setLoginCookie($username, $email) {
+    setcookie("username", $username, time() + 60 * 60 * 24 * 365);
+    setcookie("email", $email, time() + 60 * 60 * 24 * 365);
 }
 
 function checkLoginFormValidity($pdo, $email, $psw) {
     if(empty($email) || empty($psw)) {
-        echo json_encode("Compilare tutti i campi");
-        return;
+        return "Compilare tutti i campi";
     }
 
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        echo json_encode("Formato email non valido");
-        return;
+        return "Formato email non valido";
     }
+
+    return "valid";
 }
 
 function login($pdo, $email, $psw) {
@@ -132,10 +151,9 @@ function login($pdo, $email, $psw) {
         echo json_encode("Credenziali errate");
         return;
     }
+    setLoginCookie($res[0]["username"], $email);
     echo json_encode("Logged in successfully");
-    startSession($username, $email);
-    echo "Hi " . $_SESSION["$username"] . " your email is " . $_SESSION["email"];
+    //echo "Hi " . $_COOKIE["username"] . " your email is " . $_COOKIE["email"];
 }
-
 
 ?>

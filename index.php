@@ -18,9 +18,12 @@
             </div>
             <div id="navOptionsDiv">
                 <span id="deleteBtn" class="material-symbols-outlined">delete</span>
-                <span id="profileBtn" class="material-symbols-outlined">account_circle
-                    <div>Esci</div>
-                </span>
+                <span id="profileBtn" class="material-symbols-outlined">account_circle</span>
+            </div>
+            <div id="profileInfos">
+                <div><p>GIGI</p>
+                <p>gigipis@gmail.com</p></div>
+                <button id="btnLogOut">Esci</button>
             </div>
         </article>
         <form class="identification loginForm" id="loginForm" method="POST">
@@ -32,12 +35,12 @@
             <div>
                 <input type="password" name="loginPsw" id="loginPsw" required>
                 <label for="loginPsw">Password :</label>
-                <span class="material-symbols-outlined">lock</span>
+                <span class="material-symbols-outlined">visibility_off</span>
             </div>
             <div>
                 <button id="btnLogin" type="button">LOGIN</button>
             </div>
-            <a href="#">Non hai un account? Registrati</a>
+            <p id="linkToRegistration">Non hai un account? Registrati</p>
         </form>
         <form class="identification registrationForm" id="registrationForm" method="POST">
             <div>
@@ -53,7 +56,7 @@
             <div>
                 <input type="password" name="registrationPsw" id="registrationPsw" required>
                 <label for="registrationPsw">Password :</label>
-                <span class="material-symbols-outlined">lock</span>
+                <span class="material-symbols-outlined">visibility_off</span>
             </div>
             <div>
                 <button id="btnRegistration" type="button">REGISTRATI</button>

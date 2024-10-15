@@ -1,4 +1,4 @@
-<?php require_once("functions.php");
+<?php require_once("userOperations.php");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -70,6 +70,13 @@
             </div>
         </article>
         <p id="formNotification"></p>
+        <dialog id="confirmDeletion">
+            <p>Eliminare le note selezionate ?</p>
+            <p>
+                <span>Annulla</span>
+                <span>Conferma</span>
+            </p>
+        </dialog>
     </section>
 
     <script src="script.js"></script>

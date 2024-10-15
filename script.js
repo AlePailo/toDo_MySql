@@ -2,8 +2,41 @@ $(document).ready(function() {
     
     getSessionVariables()
 
+    $("#btnMic").click(function() {
+        if(localStorage.getItem("itemsSelected") != false) {
+            resetSelection()
+        }
+    })
+
     $("#btnSend").click(function() {
         createMemo($("#userInput").val())
+        
+        $("#userInput").val("")
+    })
+
+    $("#userInput").focus(function() {
+        if(localStorage.getItem("itemsSelected") != false) {
+            resetSelection()
+        }
+    })
+
+    $("#deleteBtn").click(function() {
+        $("#confirmDeletion").css("display", "flex")
+    })
+
+    $("#confirmDeletion p span:first").click(function() {
+        $("#confirmDeletion").css("display", "none")
+        resetSelection()
+    })
+
+    $("#confirmDeletion p span:last").click(function() {
+        let idsArr = $("[data-selected=true]").map(function() {
+            return this.id
+        }).get()
+        console.log(idsArr)
+        deleteMemo(idsArr)
+        resetSelection()
+        $("#confirmDeletion").css("display", "none")
     })
 
     $(".addedElements").on("click", "p", function(){
@@ -12,7 +45,22 @@ $(document).ready(function() {
 
     $(".addedElements").on("blur", "p", function(){
         $(this).attr("contentEditable", false)
-        checkMemoValueVariations($(this).text())
+        if(checkMemoValueVariations($(this).text()) === true) {
+            $.ajax({
+                type : "POST",
+                url : "notesOperations.php",
+                data : {
+                    changedMemoID : $(this).attr("id"),
+                    newMemoText : $(this).text()
+                },
+                success : function() {
+                    
+                }
+            })
+        } else {
+            console.log("No variations")
+        }
+        
     })
 
     $(".addedElements").on("touchstart", ".memoNote", function() {
@@ -52,7 +100,7 @@ $(document).ready(function() {
         $("#registrationForm").css("display", "flex")
     })
 
-    $("input ~ span").click(function() {
+    $(".identification input ~ span").click(function() {
         let input = $(this).siblings("input")
         input.focus()
         setCursorAtInputEnd(input[0])
@@ -60,7 +108,7 @@ $(document).ready(function() {
         if($(this).text() === "visibility_off") {
             $(this).text("visibility")
             $(this).siblings("input").attr("type", "text")
-        } else {
+        } else if($(this).text() === "visibility"){
             $(this).text("visibility_off")
             $(this).siblings("input").attr("type", "password")
         }
@@ -100,7 +148,7 @@ $(document).ready(function() {
         $.ajax({
             context: this,
             type : "POST",
-            url : "functions.php",
+            url : "userOperations.php",
             data : {
                 regAttemptUsername : username
             },
@@ -113,7 +161,7 @@ $(document).ready(function() {
 
                 $.ajax({
                     type : "POST",
-                    url : "functions.php",
+                    url : "userOperations.php",
                     data : {
                         regAttemptEmail : email
                     },
@@ -138,7 +186,7 @@ $(document).ready(function() {
 
         $.ajax({
             type : "POST",
-            url : "functions.php",
+            url : "userOperations.php",
             data : {
                 loginAttemptEmail : email,
                 loginAttemptPsw : psw
@@ -151,7 +199,9 @@ $(document).ready(function() {
                     return false
                 }
                 $("#loginForm").hide()
+                getProfileInfos()
                 $(".addedElements").css("display", "flex")
+                populateApp()
             }
         })
     })
@@ -163,7 +213,7 @@ $(document).ready(function() {
 
         $.ajax({
             type : "POST",
-            url : "functions.php",
+            url : "userOperations.php",
             data : {
                 regAttemptUsername : username,
                 regAttemptEmail : email,
@@ -194,7 +244,7 @@ function sendForm() {
 
 //MEMO ELEMENT CREATION BASED ON USER INPUT
 
-function createMemo(text) {
+/*function createMemo(text) {
     const el = $('<p/>',{
         text: text,
         class: "memoNote"
@@ -207,8 +257,80 @@ function createMemo(text) {
         class: "checkSelect"
     }).attr("type", "checkbox")
     .appendTo(el)
+}*/
+
+function populateApp() {
+    $.ajax({
+        type : "GET",
+        url : "notesOperations.php?action=loadContent",
+        success : function(data) {
+            data = JSON.parse(data)
+            console.log(data)
+            for(let el in data) {
+                console.log(data[el].content)
+                
+                /*const memo = $('<p/>',{
+                    text: data[el].content,
+                    class: "memoNote",
+                    id: data[el].id
+                }).attr("spellcheck", "false")
+                .attr("data-selected", false)
+                .appendTo('.addedElements')
+            
+                $('<input>',{
+                    class: "checkSelect"
+                }).attr("type", "checkbox")
+                .appendTo(memo)*/
+
+                buildMemoP(data[el].content, data[el].id)
+
+            }
+        }
+    })
 }
 
+function createMemo(text) {
+    $.ajax({
+        type : "POST",
+        url : "notesOperations.php",
+        data : {
+            text : text
+        },
+        success : function() {
+            buildMemoP(text, String(Number($(".addedElements p:last").attr("id")) + 1))
+        }
+    })
+}
+
+function buildMemoP(text, id) {
+    const memo = $('<p/>',{
+        text: text,
+        class: "memoNote",
+        id: id
+    }).attr("spellcheck", "false")
+    .attr("data-selected", false)
+    .appendTo('.addedElements')
+
+    $('<input>',{
+        class: "checkSelect"
+    }).attr("type", "checkbox")
+    .appendTo(memo)
+}
+
+function deleteMemo(idsArr) {
+    $.ajax({
+        type : "POST",
+        url : "notesOperations.php?",
+        data : {
+            deletionArr : idsArr
+        },
+        success : function() {
+            idsArr.forEach(id => {
+                $(`p.memoNote[id=${id}]`).remove()
+            })
+        }
+    })
+}
 
 
 
@@ -222,9 +344,9 @@ function saveMemoValue(value) {
 
 function checkMemoValueVariations(currentValue) {
     if(localStorage.getItem("memoValue") === currentValue) {
-        console.log("No variations")
+        return false
     } else {
-        console.log("Value changed")
+        return true
     }
 }
 
@@ -303,7 +425,7 @@ function tapEnd(el) {
     } else {
         el.attr("data-selected", false)
         el.attr("contentEditable", true)
-        $(this).focus()
+        el.focus()
     }
 
 
@@ -328,7 +450,7 @@ function resetSelection() {
 function getSessionVariables() {
     $.ajax({
         type: "POST",
-        url: "functions.php",
+        url: "userOperations.php",
         data: {
             GetSessionVariables : "true" 
         },
@@ -337,22 +459,8 @@ function getSessionVariables() {
             if(data === true) {
                 $("#loginForm").hide()
                 $(".addedElements").css("display", "flex")
-                console.log(document.cookie)
-                let cookieStr = document.cookie
-                let email = cookieStr.substring(
-                    cookieStr.indexOf("=") + 1, 
-                    cookieStr.indexOf(";")
-                )
-                let username = document.cookie.substring(
-                    cookieStr.lastIndexOf("=") + 1,
-                    cookieStr.length
-                )
-                email = email.replace("%40", "@")
-                console.log(email)
-                console.log(username)
-                $("#profileInfos p:first").text(email)
-                $("#profileInfos p:last").text(username)
-
+                getProfileInfos()
+                populateApp()
             } else {
                 //alert("Not logged in")
             }
@@ -369,9 +477,23 @@ function setCursorAtInputEnd(input) {
 function logOut() {
     $.ajax({
         type : "GET",
-        url : "functions.php?action=logout",
+        url : "userOperations.php?action=logout",
         success: function() {
             location.reload()
         }
     })
+}
+
+function getProfileInfos() {
+    let cookieStr = document.cookie
+    let email = cookieStr.substring(
+        cookieStr.indexOf("=") + 1, 
+        cookieStr.indexOf(";")
+    )
+    let username = document.cookie.substring(
+        cookieStr.lastIndexOf("=") + 1,
+        cookieStr.length
+    )
+    $("#profileInfos p:first").text(username)
+    $("#profileInfos p:last").text(email.replace("%40", "@"))
 }

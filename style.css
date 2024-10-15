@@ -29,10 +29,11 @@ body {
     width: clamp(300px, 95%, 800px);
     height: 10svh;
     position: fixed;
-    background: var(--main-bg);
+    background: transparent;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    z-index: 999;
 }
 
 #backBtn {
@@ -238,4 +239,30 @@ button {
     transform: scale(1.35);
     accent-color: var(--details);
     display: none;
+}
+
+
+#confirmDeletion {
+    position: absolute;
+    flex-direction: column;
+    justify-content: space-between;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    height: 15%;
+    border-radius: 10px;
+    background: var(--secondary-bg);
+    border: none;
+    color: var(--main-char-color);
+    padding: 1.25em 1.25em;
+}
+
+#confirmDeletion p:first-of-type {
+    font-size: 1.35em;
+}
+
+#confirmDeletion p:last-of-type {
+    display: flex;
+    justify-content: space-around;
 }

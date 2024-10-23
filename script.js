@@ -2,6 +2,11 @@ $(document).ready(function() {
     
     getSessionVariables()
 
+    $("#btnMic").on({
+        mousedown : recClickStart,
+        touchstart : recTapStart
+    })
+
     $("#btnMic").click(function() {
         if(localStorage.getItem("itemsSelected") != false) {
             resetSelection()
@@ -296,8 +301,9 @@ function createMemo(text) {
         data : {
             text : text
         },
-        success : function() {
-            buildMemoP(text, String(Number($(".addedElements p:last").attr("id")) + 1))
+        success : function(data) {
+            data = JSON.parse(data)
+            buildMemoP(text, data[0].id)
         }
     })
 }
@@ -497,3 +503,104 @@ function getProfileInfos() {
     $("#profileInfos p:first").text(username)
     $("#profileInfos p:last").text(email.replace("%40", "@"))
 }
+
+
+
+
+
+// MOUSE EVENTS FUNCTIONS
+
+function recClickStart() {
+    document.addEventListener("mouseup", recClickEnd, true)
+    startRegistration()
+}
+  
+function recClickEnd() {
+    stopRegistration()
+    document.removeEventListener("mouseup", recClickEnd, true)
+}
+
+
+
+
+
+// MOBILE TOUCH EVENTS FUNCTIONS
+
+function recTapStart() {
+    document.addEventListener("touchend", recTapEnd, true)
+    startRegistration()
+}
+  
+function recTapEnd(e) {
+    e.preventDefault()
+    stopRegistration()
+    document.removeEventListener("touchend", recTapEnd, true)
+}
+
+
+
+
+
+// TOGGLE RECORDING FUNCTIONS
+
+function startRegistration() {
+    timer = setTimeout(() => {
+      timer = null
+      $("#btnMic").css("transform", "scale(1.25)")
+      localStorage.setItem("speech", "")
+      toggleRecording()
+    }, 750)
+  }
+  
+  function stopRegistration() {
+    clearTimer()
+    toggleRecording()
+    setTimeout(() => {
+      //$("#results").html(localStorage.getItem("speech"))
+      createMemo(localStorage.getItem("speech"))
+      //console.log(localStorage.getItem("speech"))
+    },500)
+    $("#btnMic").css("transform", "scale(1)")
+  }
+
+
+
+
+
+window.SpeechRecognition = window.SpeechRecognition ||
+window.webkitSpeechRecognition;
+
+let recognition = new window.SpeechRecognition()
+let recording = false;
+let results = null;
+
+recognition.continuous = true;
+recognition.lang = "it-IT"
+
+function toggleRecording() {
+  if(recording) {
+    recognition.onend = null
+    recognition.stop()
+    recording = false
+  } else {
+    recognition.onend = onEnd
+    recognition.start()
+    recording = true
+  }
+}
+
+function onEnd() {
+  //Prevent mic recording to stop on its own after a few seconds
+  console.log('Speech recognition has stopped. Starting again ...')
+  recognition.start()
+}
+
+
+function onSpeak(e) {
+  results = e.results;
+  //console.log(e.results[e.results.length-1][0].transcript)
+  let text = localStorage.getItem("speech") + e.results[e.results.length-1][0].transcript
+  localStorage.setItem("speech", text)
+}
+
+recognition.addEventListener('result', onSpeak)

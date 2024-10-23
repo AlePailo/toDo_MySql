@@ -22,6 +22,14 @@ function postMemo($pdo, $text) {
     $userEmail = $_COOKIE["email"];
     $stmt = $pdo->prepare("INSERT INTO todos(user_email, content, pub_date) VALUES (?,?,NOW())");
     $stmt->execute([$userEmail, $text]);
+    checkLastId($pdo);
+}
+
+function checkLastId($pdo) {
+    $stmt = $pdo->prepare("SELECT id FROM todos ORDER BY id DESC LIMIT 1");
+    $stmt->execute();
+    $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    echo json_encode($res);
 }
 
 function populateApp($pdo) {

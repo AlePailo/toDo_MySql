@@ -14,28 +14,34 @@
     <section class="container">
         <article id="navMenu">
             <div id="navBackDiv">
-                <span id="backBtn" class="material-symbols-outlined">arrow_back_ios</span>
+                <span id="backBtn"><img class="material-icons" src="media/icons/arrowBackIcon.svg" alt=""></span>
             </div>
             <div id="navOptionsDiv">
-                <span id="deleteBtn" class="material-symbols-outlined">delete</span>
-                <span id="profileBtn" class="material-symbols-outlined">account_circle</span>
+                <span id="deleteBtn"><img class="material-icons" src="media/icons/deleteIcon.svg" alt=""></span>
+                <!--<span id="profileBtn" class="material-symbols-outlined">account_circle</span>-->
+                <span id="profileBtn"><img class="material-icons" src="media/icons/profileIcon.svg" alt=""></span>
             </div>
             <div id="profileInfos">
-                <div><p>GIGI</p>
-                <p>gigipis@gmail.com</p></div>
+                <div><p></p>
+                <p></p></div>
                 <button id="btnLogOut">Esci</button>
             </div>
         </article>
+        <div id="loadingCircleDiv" class="identification">
+            <svg viewBox="25 25 50 50">
+                <circle r="20" cy="50" cx="50"></circle>
+            </svg>
+        </div>
         <form class="identification loginForm" id="loginForm" method="POST">
             <div>
                 <input type="email" name="loginEmail" id="loginEmail" required>
                 <label for="loginEmail">E-mail :</label>
-                <span class="material-symbols-outlined">mail</span>
+                <span><img class="material-icons" src="media/icons/emailIcon.svg" alt=""></span>
             </div>
             <div>
                 <input type="password" name="loginPsw" id="loginPsw" required>
                 <label for="loginPsw">Password :</label>
-                <span class="material-symbols-outlined">visibility_off</span>
+                <span><img class="material-icons" src="media/icons/pswHideIcon.svg" alt=""></span>
             </div>
             <div>
                 <button id="btnLogin" type="button">LOGIN</button>
@@ -46,17 +52,17 @@
             <div>
                 <input type="text" name="registrationUsername" id="registrationUsername" required>
                 <label for="registrationUsername">Nome Utente :</label>
-                <span class="material-symbols-outlined">person</span>
+                <span><img class="material-icons" src="media/icons/usernameIcon.svg" alt=""></span>
             </div>
             <div>
                 <input type="email" name="registrationEmail" id="registrationEmail" required>
                 <label for="registrationEmail">E-mail :</label>
-                <span class="material-symbols-outlined">mail</span>
+                <span><img class="material-icons" src="media/icons/emailIcon.svg" alt=""></span>
             </div>
             <div>
                 <input type="password" name="registrationPsw" id="registrationPsw" required>
                 <label for="registrationPsw">Password :</label>
-                <span class="material-symbols-outlined">visibility_off</span>
+                <span><img class="material-icons" src="media/icons/pswHideIcon.svg" alt=""></span>
             </div>
             <div>
                 <button id="btnRegistration" type="button">REGISTRATI</button>
@@ -65,8 +71,10 @@
         <article class="addedElements">
             <div id="userInputsDiv">
                 <input placeholder="Scrivi" type="text" name="userInput" id="userInput">
-                <span id="btnMic" class="material-symbols-outlined">mic</span>
-                <span id="btnSend" class="material-symbols-outlined">send</span>
+                <span id="btnMic"><img class="material-icons" src="media/icons/micIcon.svg" alt=""></span>
+                <!--<span id="btnMic" class="material-symbols-outlined">mic</span>
+                <span id="btnSend" class="material-symbols-outlined">send</span>-->
+                <span id="btnSend"><img class="material-icons" src="media/icons/sendIcon.svg" alt=""></span>
             </div>
         </article>
         <p id="formNotification"></p>

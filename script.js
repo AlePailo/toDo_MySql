@@ -101,7 +101,7 @@ $(document).ready(function() {
     })
 
     $("#linkToRegistration").click(function() {
-        $("#loginForm").hide()
+        hideLoginForm()
         $("#registrationForm").css("display", "flex")
     })
 
@@ -110,11 +110,11 @@ $(document).ready(function() {
         input.focus()
         setCursorAtInputEnd(input[0])
 
-        if($(this).text() === "visibility_off") {
-            $(this).text("visibility")
+        if($(this).find("img").attr("src") === "media/icons/pswHideIcon.svg") {
+            $(this).find("img").attr("src", "media/icons/pswShowIcon.svg")
             $(this).siblings("input").attr("type", "text")
-        } else if($(this).text() === "visibility"){
-            $(this).text("visibility_off")
+        } else if($(this).find("img").attr("src") === "media/icons/pswShowIcon.svg"){
+            $(this).find("img").attr("src", "media/icons/pswHideIcon.svg")
             $(this).siblings("input").attr("type", "password")
         }
     })
@@ -203,7 +203,8 @@ $(document).ready(function() {
                     $("#formNotification").show().text(data).css("background", "#BB0A21")
                     return false
                 }
-                $("#loginForm").hide()
+                hideLoginForm()
+                $("#profileBtn").show()
                 getProfileInfos()
                 $(".addedElements").css("display", "flex")
                 populateApp()
@@ -380,8 +381,11 @@ function tapStart(el) {
 
     timer = setTimeout(() => {
         timer = null
-        $("#backBtn").css("display", "inline-block")
-        $("#deleteBtn").css("display", "inline-block")
+        /*$("#backBtn").css("display", "inline-block")
+        $("#deleteBtn").css("display", "inline-block")*/
+        $("#deleteBtn").show()
+        $("#backBtn").show()
+        $("#profileBtn").hide()
         console.log("half second passed")
         localStorage.setItem("longPress", true)
         localStorage.setItem("itemsSelected", true)
@@ -441,8 +445,11 @@ function tapEnd(el) {
 }
 
 function resetSelection() {
-    $("#deleteBtn").css("display", "none")
-    $("#backBtn").css("display", "none")
+    $("#deleteBtn").hide()
+    $("#backBtn").hide()
+    /*$("#deleteBtn").css("display", "none")
+    $("#backBtn").css("display", "none")*/
+    $("#profileBtn").show()
     $(".memoNote").attr("data-selected", false)
     $(".memoNote input").hide().removeAttr("checked")
     localStorage.setItem("itemsSelected", false)
@@ -454,6 +461,7 @@ function resetSelection() {
 }
 
 function getSessionVariables() {
+    $("#loadingCircleDiv").css("display", "flex")
     $.ajax({
         type: "POST",
         url: "userOperations.php",
@@ -461,17 +469,29 @@ function getSessionVariables() {
             GetSessionVariables : "true" 
         },
         success : function(data) {
+            $("#loadingCircleDiv").hide()
             data = JSON.parse(data)
             if(data === true) {
-                $("#loginForm").hide()
                 $(".addedElements").css("display", "flex")
+                $("#profileBtn").show()
                 getProfileInfos()
                 populateApp()
             } else {
+                showLoginForm()
+                //$("#loginForm").css("display", "flex")
                 //alert("Not logged in")
             }
         }
     })
+}
+
+function showLoginForm() {
+    $("#loginForm").css("display", "flex")
+    $("#profileBtn").hide()
+}
+
+function hideLoginForm() {
+    $("#loginForm").hide()
 }
 
 function setCursorAtInputEnd(input) {

@@ -13,17 +13,27 @@
 <body>
     <section class="container">
         <article id="navMenu">
-            <div id="navBackDiv">
+            <div id="navOptions">
+                <span id="backBtn"><img class="material-icons" src="media/icons/arrowBackIcon.svg" alt=""></span>
+                <span id="deleteBtn"><img class="material-icons" src="media/icons/deleteIcon.svg" alt=""></span>
+            </div>
+            <div id="navProfile">
+                <span id="profileBtn"><img class="material-icons" src="media/icons/profileIcon.svg" alt=""></span>
+            </div>
+            
+            
+            <!--<div id="navBackDiv">
                 <span id="backBtn"><img class="material-icons" src="media/icons/arrowBackIcon.svg" alt=""></span>
             </div>
             <div id="navOptionsDiv">
                 <span id="deleteBtn"><img class="material-icons" src="media/icons/deleteIcon.svg" alt=""></span>
-                <!--<span id="profileBtn" class="material-symbols-outlined">account_circle</span>-->
                 <span id="profileBtn"><img class="material-icons" src="media/icons/profileIcon.svg" alt=""></span>
-            </div>
+            </div>-->
             <div id="profileInfos">
-                <div><p></p>
-                <p></p></div>
+                <div>
+                    <p></p>
+                    <p></p>
+                </div>
                 <button id="btnLogOut">Esci</button>
             </div>
         </article>
@@ -72,8 +82,6 @@
             <div id="userInputsDiv">
                 <input placeholder="Scrivi" type="text" name="userInput" id="userInput">
                 <span id="btnMic"><img class="material-icons" src="media/icons/micIcon.svg" alt=""></span>
-                <!--<span id="btnMic" class="material-symbols-outlined">mic</span>
-                <span id="btnSend" class="material-symbols-outlined">send</span>-->
                 <span id="btnSend"><img class="material-icons" src="media/icons/sendIcon.svg" alt=""></span>
             </div>
         </article>

@@ -80,12 +80,17 @@ $(document).ready(function() {
     })
 
     $("#btnLogOut").click(function() {
-        alert("HI")
         logOut()
     })
 
     $("#backBtn").click(function() {
-        resetSelection()
+        if($("#registrationForm").css("display") === "flex") {
+            $("#registrationForm").hide()
+            $("#deleteBtn").css("visibility", "visible")
+            showLoginForm()
+        } else {
+            resetSelection()
+        }
     })
 
     $("#profileBtn").click(function() {
@@ -103,6 +108,8 @@ $(document).ready(function() {
     $("#linkToRegistration").click(function() {
         hideLoginForm()
         $("#registrationForm").css("display", "flex")
+        $("#navOptions").css("display", "flex")
+        $("#deleteBtn").css("visibility", "hidden")
     })
 
     $(".identification input ~ span").click(function() {
@@ -204,10 +211,7 @@ $(document).ready(function() {
                     return false
                 }
                 hideLoginForm()
-                $("#profileBtn").show()
-                getProfileInfos()
-                $(".addedElements").css("display", "flex")
-                populateApp()
+                showMemoPage()
             }
         })
     })
@@ -381,11 +385,8 @@ function tapStart(el) {
 
     timer = setTimeout(() => {
         timer = null
-        /*$("#backBtn").css("display", "inline-block")
-        $("#deleteBtn").css("display", "inline-block")*/
-        $("#deleteBtn").show()
-        $("#backBtn").show()
-        $("#profileBtn").hide()
+        $("#navProfile").hide()
+        $("#navOptions").css("display", "flex")
         console.log("half second passed")
         localStorage.setItem("longPress", true)
         localStorage.setItem("itemsSelected", true)
@@ -445,11 +446,8 @@ function tapEnd(el) {
 }
 
 function resetSelection() {
-    $("#deleteBtn").hide()
-    $("#backBtn").hide()
-    /*$("#deleteBtn").css("display", "none")
-    $("#backBtn").css("display", "none")*/
-    $("#profileBtn").show()
+    $("#navOptions").hide()
+    $("#navProfile").css("display", "flex")
     $(".memoNote").attr("data-selected", false)
     $(".memoNote input").hide().removeAttr("checked")
     localStorage.setItem("itemsSelected", false)
@@ -472,10 +470,7 @@ function getSessionVariables() {
             $("#loadingCircleDiv").hide()
             data = JSON.parse(data)
             if(data === true) {
-                $(".addedElements").css("display", "flex")
-                $("#profileBtn").show()
-                getProfileInfos()
-                populateApp()
+                showMemoPage()
             } else {
                 showLoginForm()
                 //$("#loginForm").css("display", "flex")
@@ -487,7 +482,8 @@ function getSessionVariables() {
 
 function showLoginForm() {
     $("#loginForm").css("display", "flex")
-    $("#profileBtn").hide()
+    $("#navOptions").hide()
+    $("#navProfile").hide()
 }
 
 function hideLoginForm() {
@@ -624,3 +620,13 @@ function onSpeak(e) {
 }
 
 recognition.addEventListener('result', onSpeak)
+
+
+
+
+function showMemoPage() {
+    $("#navProfile").css("display", "flex")
+    getProfileInfos()
+    $(".addedElements").css("display", "flex")
+    populateApp()
+}

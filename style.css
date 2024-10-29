@@ -281,6 +281,7 @@ button {
 
 #confirmDeletion p:first-of-type {
     font-size: 1.35em;
+    text-align: center;
 }
 
 #confirmDeletion p:last-of-type {

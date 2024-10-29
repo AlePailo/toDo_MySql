@@ -1,6 +1,9 @@
 $(document).ready(function() {
     
     getSessionVariables()
+    localStorage.setItem("dblClickTime", 0)
+    localStorage.setItem("itemsSelected", false)
+    localStorage.setItem("longPress", false)
 
     $("#btnMic").on({
         mousedown : recClickStart,
@@ -68,7 +71,7 @@ $(document).ready(function() {
         
     })
 
-    $(".addedElements").on("touchstart", ".memoNote", function() {
+    /*$(".addedElements").on("touchstart", ".memoNote", function() {
         tapStart($(this))
     })
 
@@ -76,8 +79,38 @@ $(document).ready(function() {
         tapEnd($(this))
 
         //GETS RID OF FIRST CLICK CHECKBOX BUG (REMOVE THIS AND TRY TO UNCHECK A CHECKBOX TO SEE)
-        event.preventDefault()
+        //event.preventDefault()
     })
+
+    $(".addedElements").on("click", ".memoNote", function() {
+        tapStart($(this))
+    })*/
+
+    $(".addedElements").on("pointerdown", ".memoNote", function(e) {
+        switch(e.pointerType) {
+            case "mouse" : 
+                tapStart($(this))
+                break
+            case "touch" : 
+                tapStart($(this))
+                break
+        }
+    })
+
+    $(".addedElements").on("pointerup", ".memoNote", function(e) {
+        switch(e.pointerType) {
+            case "mouse" : 
+                tapEnd($(this))
+                break
+            case "touch" : 
+                tapEnd($(this))
+                break
+        }
+    })
+
+    /*$(".addedElements").on("mouseup", ".memoNote", function() {
+        tapEnd($(this))
+    })*/
 
     $("#btnLogOut").click(function() {
         logOut()
@@ -113,28 +146,32 @@ $(document).ready(function() {
     })
 
     $(".identification input ~ span").click(function() {
+
         let input = $(this).siblings("input")
+        let imgDataCover = $(this).find("img").attr("data-cover")
         input.focus()
+
+        //RETURN IF IT'S NOT A PASSWORD FIELD
+        if(typeof imgDataCover === "undefined" || typeof imgDataCover === false) {
+            return
+        }
+
+
+        //SET CARET AFTER LAST INPUT CHARACTER AND TOGGLE SHOW/HIDE PASSWORD FIELD VALUE
         setCursorAtInputEnd(input[0])
 
-        if($(this).find("img").attr("src") === "media/icons/pswHideIcon.svg") {
+        if(imgDataCover === "cover") {
             $(this).find("img").attr("src", "media/icons/pswShowIcon.svg")
+            $(this).find("img").attr("data-cover", "show")
             $(this).siblings("input").attr("type", "text")
-        } else if($(this).find("img").attr("src") === "media/icons/pswShowIcon.svg"){
-            $(this).find("img").attr("src", "media/icons/pswHideIcon.svg")
-            $(this).siblings("input").attr("type", "password")
+            return
         }
-    })
 
-    /*$("input[type='password']").focus(function() {
-        $(this).siblings("span").text("visibility_off")
-    })
+        $(this).find("img").attr("src", "media/icons/pswHideIcon.svg")
+        $(this).find("img").attr("data-cover", "cover")
+        $(this).siblings("input").attr("type", "password")
 
-    $("input[type='password']").blur(function() {
-        if($(this).val() === "") {
-            $(this).siblings("span").text("lock")
-        }
-    })*/
+    })
 
     $(".addedElements").on("change", "input.checkSelect", function(){
         /*if($(this).attr("display") === "none") {
@@ -368,30 +405,32 @@ let timer = null
 
 function tapStart(el) {
 
-    if(!el.attr("data-selected") == "true") {
+    /*if(el.attr("contenteditable") === "true") {
+        console.log("SIUM")
+        return
+    }*/
+
+    detectDoubleClick(el)
+
+    
+    localStorage.setItem("longPress", false)
+
+    if(el.attr("data-selected") != "true" && localStorage.getItem("itemsSelected") === "false") {
         el.attr("data-selected", true)
-    }
-    console.log(localStorage.getItem("itemsSelected"))
-    if(localStorage.getItem("itemsSelected") != true) {
-        localStorage.setItem("longPress", false)
-    } else {
-        el.find("input").toggle()
-        if(el.attr("checked") == true) {
-            el.attr("checked") = false
-        } else {
-            el.attr("checked") = true
-        }
     }
 
     timer = setTimeout(() => {
         timer = null
+        console.log("half second passed")
+
+        
         $("#navProfile").hide()
         $("#navOptions").css("display", "flex")
-        console.log("half second passed")
-        localStorage.setItem("longPress", true)
-        localStorage.setItem("itemsSelected", true)
         $(".memoNote input:checkbox").show()
         el.children("input").attr("checked", true)
+
+        localStorage.setItem("longPress", true)
+
     }, 500)
 }
 
@@ -400,49 +439,55 @@ function clearTimer() {
 }
 
 function tapEnd(el) {
+
+    console.log("GIGI PISS")
     clearTimer()
     console.log(localStorage.getItem("longPress"))
     const isLongPressed = localStorage.getItem("longPress")
     const itemsSelected = localStorage.getItem("itemsSelected")
-    
-    /*if(isLongPressed == true || localStorage.getItem("itemsSelected") == true) {
-        el.attr("data-selected", true)
-    } else {
-        el.attr("data-selected", false)
-        $(this).attr("contentEditable", true)
-        $(this).focus()
-    }*/
+
     console.log("itemsSelected : " + localStorage.getItem("itemsSelected"))
-    if(itemsSelected == "true") {
-        if(el.attr("data-selected") == "true") {
-            el.attr("data-selected", false)
-            el.find("input").removeAttr("checked")
-            let checks = 0
-            $(".memoNote input:checkbox").each(function(index, value) {
-                if($(this).attr("checked")) {
-                    checks++
-                    console.log("check n" + index)
-                }
-            })
-            if(checks == 0) {
-                resetSelection()
-            }
-        } else {
-            el.attr("data-selected", true)
-            el.find("input").attr("checked", "checked")
-        }
-    } else if(isLongPressed == "true") {
-        el.attr("data-selected", true)
-    } else {
-        el.attr("data-selected", false)
-        el.attr("contentEditable", true)
-        el.focus()
+    console.log("longPress : " + isLongPressed)
+
+
+    //DO NOTHING ON LONGPRESS WHILE THERE ARE NOTES SELECTED
+    if(isLongPressed === "true" && itemsSelected === "true") {
+        return
     }
 
 
+    //IF LONG PRESS TRIGGERED
+    if(isLongPressed === "true") {
+        localStorage.setItem("itemsSelected", true)
+        return
+    }
 
-    //localStorage.getItem("longPress") === true ? el.attr("data-selected", "true") : el.attr("data-slected", "false")
-    //el.attr("userSelected") === "true" ? el.css("background", "var(--on-focus-memo)") : el.css("background", "var(--secondary-bg)")
+
+    //TRIGGERED IF THERE'S ALREADY AT LEAST ONE MEMO NOTE SELECTED ON CLICK
+    if(itemsSelected === "true") {
+        console.log("YUPPI")
+        if(el.attr("data-selected") === "false") {
+            el.attr("data-selected", true)
+            el.find("input").attr("checked", "checked")
+            return
+        }
+        el.attr("data-selected", false)
+        el.find("input").removeAttr("checked")
+        let checks = 0
+        $(".memoNote input:checkbox").each(function(index, value) {
+            console.log(this.checked)
+            if($(this).attr("checked")) {
+                checks++
+                console.log("check n" + index)
+            }
+        })
+        if(checks == 0) {
+            localStorage.setItem("itemsSelected", false)
+            resetSelection()
+        }
+    }
+
+    el.attr("data-selected", false)
 }
 
 function resetSelection() {
@@ -629,4 +674,30 @@ function showMemoPage() {
     getProfileInfos()
     $(".addedElements").css("display", "flex")
     populateApp()
+}
+
+
+function detectDoubleClick(el) {
+    
+    let timeout = setTimeout(() => {
+        localStorage.setItem("dblClickTime", 0)
+        console.log("Time passed")
+        clearTimeout(timeout)
+    },750)
+
+    let dblClickTime = Number(localStorage.getItem("dblClickTime"))
+    if(dblClickTime === 0) {
+        localStorage.setItem("dblClickTime", new Date().getTime())
+        localStorage.setItem("memoClicked", el[0].id)
+        return
+    }
+
+    if((new Date().getTime() - dblClickTime) < 750 && localStorage.getItem("memoClicked") === el[0].id) {
+        localStorage.setItem("dblClickTime", 0)
+        console.log("double click")
+        console.log(localStorage.getItem("memoClicked"))
+        console.log(el[0].id)
+        el[0].contentEditable = "true"
+        el[0].focus()
+    }
 }

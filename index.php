@@ -51,7 +51,7 @@
             <div>
                 <input type="password" name="loginPsw" id="loginPsw" required>
                 <label for="loginPsw">Password :</label>
-                <span><img class="material-icons" src="media/icons/pswHideIcon.svg" alt=""></span>
+                <span><img class="material-icons" src="media/icons/pswHideIcon.svg" alt="" data-cover="cover"></span>
             </div>
             <div>
                 <button id="btnLogin" type="button">LOGIN</button>
@@ -72,7 +72,7 @@
             <div>
                 <input type="password" name="registrationPsw" id="registrationPsw" required>
                 <label for="registrationPsw">Password :</label>
-                <span><img class="material-icons" src="media/icons/pswHideIcon.svg" alt=""></span>
+                <span><img class="material-icons" src="media/icons/pswHideIcon.svg" alt="" data-cover="cover"></span>
             </div>
             <div>
                 <button id="btnRegistration" type="button">REGISTRATI</button>

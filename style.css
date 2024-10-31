@@ -13,6 +13,7 @@
     user-select: none;
 }
 
+
 :root {
     --secondary-bg: #262626;
     --main-bg: #0B1215;
@@ -26,6 +27,7 @@ body {
     background: var(--main-bg);
     color: var(--main-char-color);
     width: 100%;
+    touch-action: manipulation;
 }
 
 .container, #userInputsDiv {
@@ -56,6 +58,7 @@ body {
 #navProfile {
     justify-content: end;
     display: none;
+    gap: 1.5rem;
 }
 
 #profileBtn {
@@ -262,20 +265,45 @@ button {
     display: none;
 }
 
+dialog {
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    border-radius: 10px;
+    background: var(--secondary-bg);
+    border: none;
+    color: var(--main-char-color);
+}
+
+
+#helpBox {
+    position: fixed;
+    width: calc(80 / 100 * clamp(300px, 95%, 800px));
+    height: 80vh;
+    outline: 0;
+    padding: 1rem;
+}
+
+#helpBox button {
+    outline: 0;
+    width: 80%;
+    left: 50%;
+    transform: translateX(-50%);
+    position: absolute;
+    bottom: 1rem;
+}
+
+#helpBox div {
+    margin: 1.5rem 0;
+}
+
 
 #confirmDeletion {
     position: absolute;
     flex-direction: column;
     justify-content: space-between;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 80%;
     height: 15%;
-    border-radius: 10px;
-    background: var(--secondary-bg);
-    border: none;
-    color: var(--main-char-color);
     padding: 1.25em 1.25em;
 }
 

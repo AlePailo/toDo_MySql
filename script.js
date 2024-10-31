@@ -53,7 +53,7 @@ $(document).ready(function() {
 
     $(".addedElements").on("blur", "p", function(){
         $(this).attr("contentEditable", false)
-        if(checkMemoValueVariations($(this).text()) === true) {
+        if(checkMemoValueVariations($(this), $(this).text()) === true) {
             $.ajax({
                 type : "POST",
                 url : "notesOperations.php",
@@ -65,10 +65,7 @@ $(document).ready(function() {
                     
                 }
             })
-        } else {
-            console.log("No variations")
         }
-        
     })
 
     /*$(".addedElements").on("touchstart", ".memoNote", function() {
@@ -124,6 +121,14 @@ $(document).ready(function() {
         } else {
             resetSelection()
         }
+    })
+
+    $("#helpBtn").click(function() {
+        $("#helpBox")[0].showModal()    
+    })
+
+    $("#btnCloseHelpBox").click(function() {
+        $("#helpBox")[0].close()
     })
 
     $("#profileBtn").click(function() {
@@ -390,11 +395,12 @@ function saveMemoValue(value) {
 }
 
 
-function checkMemoValueVariations(currentValue) {
-    if(localStorage.getItem("memoValue") === currentValue) {
-        return false
-    } else {
+function checkMemoValueVariations(el, currentValue) {
+    if(localStorage.getItem("memoValue") != currentValue && currentValue != "") {
         return true
+    }
+    if(currentValue === "") {
+       deleteMemo([el[0].id])
     }
 }
 

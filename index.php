@@ -18,6 +18,7 @@
                 <span id="deleteBtn"><img class="material-icons" src="media/icons/deleteIcon.svg" alt=""></span>
             </div>
             <div id="navProfile">
+                <span id="helpBtn"><img class="material-icons" src="media/icons/helpIcon.svg" alt=""></span>
                 <span id="profileBtn"><img class="material-icons" src="media/icons/profileIcon.svg" alt=""></span>
             </div>
             
@@ -92,6 +93,23 @@
                 <span>Annulla</span>
                 <span>Conferma</span>
             </p>
+        </dialog>
+        <dialog id="helpBox">
+            <div>
+                <h3>Per modificare una nota : </h3>
+                <p>Cliccare due volte sulla nota che si vuole modificare.<br>
+                    Lasciare una nota vuota comporterà la cancellazione della stessa.
+                </p>
+            </div>
+            <div>
+                <h3>Per eliminare una nota : </h3>
+                <p>Tenere premuto sulla nota che si vuole eliminare per aprire il menù, a quel punto si potranno selezionare anche più note ed eliminarle con l'apposita icona.</p>
+            </div>
+            <div>
+                <h3>Per aggiungere una voce tramite audio : </h3>
+                <p>Tenere premuto sull'icona del microfono per tutta la durata della registrazione.</p>
+            </div>
+            <button id="btnCloseHelpBox">CHIUDI</button>
         </dialog>
     </section>
 

@@ -95,20 +95,24 @@
             </p>
         </dialog>
         <dialog id="helpBox">
-            <div>
-                <h3>Per modificare una nota : </h3>
-                <p>Cliccare due volte sulla nota che si vuole modificare.<br>
-                    Lasciare una nota vuota comporterà la cancellazione della stessa.
-                </p>
-            </div>
-            <div>
-                <h3>Per eliminare una nota : </h3>
-                <p>Tenere premuto sulla nota che si vuole eliminare per aprire il menù, a quel punto si potranno selezionare anche più note ed eliminarle con l'apposita icona.</p>
-            </div>
-            <div>
-                <h3>Per aggiungere una voce tramite audio : </h3>
-                <p>Tenere premuto sull'icona del microfono per tutta la durata della registrazione.</p>
-            </div>
+            <ul>
+                <li>
+                    <h3>MODIFICARE UNA NOTA</h3>
+                    <p>Cliccare due volte sulla nota che si vuole modificare.<br>
+                        Lasciare una nota vuota comporterà la cancellazione della stessa.
+                    </p>
+                </li>
+                <li>
+                    <h3>ELIMINARE UNA NOTA</h3>
+                    <p>Tenere premuto sulla nota che si vuole eliminare e cliccare sull'apposita icona.<br>
+                        Si possono selezionare ed eliminare più note alla volta.
+                    </p>
+                </li>
+                <li>
+                    <h3>AGGIUNGERE NOTA TRAMITE AUDIO</h3>
+                    <p>Tenere premuto sull'icona del microfono per tutta la durata della registrazione.</p>
+                </li>
+            </ul>
             <button id="btnCloseHelpBox">CHIUDI</button>
         </dialog>
     </section>

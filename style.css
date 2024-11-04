@@ -282,22 +282,51 @@ dialog {
     width: calc(80 / 100 * clamp(300px, 95%, 800px));
     height: 80vh;
     outline: 0;
+    
+    border: 1px solid var(--main-char-color);
     padding: 1rem;
+    overflow-y: hidden;
 }
+
+#helpBox::backdrop {
+    background: rgba(0,0,0,0.5);
+  }
 
 #helpBox button {
     outline: 0;
-    width: 80%;
+    width: max-content;
+    padding: 1rem 3rem;
     left: 50%;
     transform: translateX(-50%);
     position: absolute;
     bottom: 1rem;
 }
 
-#helpBox div {
-    margin: 1.5rem 0;
+#helpBox ul {
+    max-height: 85%;
+    list-style-type: none;
+    overflow-y: scroll;
 }
 
+#helpBox li {
+    margin: 2rem 0.5rem 2rem 1rem;
+    background: url(media/icons/infoIcon.svg) left top no-repeat;
+    padding-left: 2rem;
+}
+
+#helpBox h3 {
+    position: relative;
+    margin-bottom: 0.5rem;
+    text-decoration: underline;
+    text-decoration-thickness: 0.2rem;
+    text-underline-offset: 0.15rem;
+}
+
+#helpBox span {
+    display: flex;
+    align-items: center;
+    height: max-content;
+}
 
 #confirmDeletion {
     position: absolute;

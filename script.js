@@ -1,6 +1,9 @@
 $(document).ready(function() {
     
+    //CHECKING IF THE USER IS LOGGED IN
     getSessionVariables()
+
+    //RESETTING LOCAL STORAGE VARIABLES
     localStorage.setItem("dblClickTime", 0)
     localStorage.setItem("itemsSelected", false)
     localStorage.setItem("longPress", false)
@@ -10,7 +13,7 @@ $(document).ready(function() {
         touchstart : recTapStart
     })
 
-    $("#btnMic").click(function() {
+    $("#btnMic, #userInput").click(function() {
         if(localStorage.getItem("itemsSelected") != false) {
             resetSelection()
         }
@@ -20,12 +23,6 @@ $(document).ready(function() {
         createMemo($("#userInput").val())
         
         $("#userInput").val("")
-    })
-
-    $("#userInput").focus(function() {
-        if(localStorage.getItem("itemsSelected") != false) {
-            resetSelection()
-        }
     })
 
     $("#deleteBtn").click(function() {
@@ -105,9 +102,11 @@ $(document).ready(function() {
         }
     })
 
-    /*$(".addedElements").on("mouseup", ".memoNote", function() {
-        tapEnd($(this))
-    })*/
+    $(".addedElements").on("touchmove mousemove", ".memoNote", function() {
+        if(localStorage.getItem("itemsSelected") != "true") {
+            tapEnd($(this))
+        }
+    })
 
     $("#btnLogOut").click(function() {
         logOut()
@@ -252,8 +251,9 @@ $(document).ready(function() {
                     $("#formNotification").show().text(data).css("background", "#BB0A21")
                     return false
                 }
-                hideLoginForm()
-                showMemoPage()
+                /*hideLoginForm()
+                showMemoPage()*/
+                window.location.reload()
             }
         })
     })
@@ -284,6 +284,7 @@ $(document).ready(function() {
 
     $("#registrationForm").submit(function() {
         $(this).hide(1000)
+        location.reload()
     })
 
 })
@@ -318,6 +319,11 @@ function populateApp() {
         success : function(data) {
             data = JSON.parse(data)
             console.log(data)
+            
+            if(data === "No results") {
+                return
+            }
+
             for(let el in data) {
                 console.log(data[el].content)
                 
@@ -411,14 +417,10 @@ let timer = null
 
 function tapStart(el) {
 
-    /*if(el.attr("contenteditable") === "true") {
-        console.log("SIUM")
-        return
-    }*/
+    if(localStorage.getItem("itemsSelected") != "true") {
+        detectDoubleClick(el)
+    }
 
-    detectDoubleClick(el)
-
-    
     localStorage.setItem("longPress", false)
 
     if(el.attr("data-selected") != "true" && localStorage.getItem("itemsSelected") === "false") {
@@ -445,8 +447,6 @@ function clearTimer() {
 }
 
 function tapEnd(el) {
-
-    console.log("GIGI PISS")
     clearTimer()
     console.log(localStorage.getItem("longPress"))
     const isLongPressed = localStorage.getItem("longPress")
@@ -559,11 +559,12 @@ function logOut() {
 
 function getProfileInfos() {
     let cookieStr = document.cookie
-    let email = cookieStr.substring(
+    console.log(cookieStr)
+    let username = cookieStr.substring(
         cookieStr.indexOf("=") + 1, 
         cookieStr.indexOf(";")
     )
-    let username = document.cookie.substring(
+    let email = document.cookie.substring(
         cookieStr.lastIndexOf("=") + 1,
         cookieStr.length
     )
@@ -621,6 +622,9 @@ function startRegistration() {
   
   function stopRegistration() {
     clearTimer()
+    if(recording === null) {
+        return
+    }
     toggleRecording()
     setTimeout(() => {
       //$("#results").html(localStorage.getItem("speech"))
@@ -638,7 +642,7 @@ window.SpeechRecognition = window.SpeechRecognition ||
 window.webkitSpeechRecognition;
 
 let recognition = new window.SpeechRecognition()
-let recording = false;
+let recording = null;
 let results = null;
 
 recognition.continuous = true;
@@ -648,7 +652,7 @@ function toggleRecording() {
   if(recording) {
     recognition.onend = null
     recognition.stop()
-    recording = false
+    recording = null
   } else {
     recognition.onend = onEnd
     recognition.start()

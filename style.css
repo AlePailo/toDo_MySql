@@ -269,7 +269,6 @@ dialog {
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    width: 80%;
     border-radius: 10px;
     background: var(--secondary-bg);
     border: none;
@@ -282,7 +281,6 @@ dialog {
     width: calc(80 / 100 * clamp(300px, 95%, 800px));
     height: 80vh;
     outline: 0;
-    
     border: 1px solid var(--main-char-color);
     padding: 1rem;
     overflow-y: hidden;
@@ -329,6 +327,7 @@ dialog {
 }
 
 #confirmDeletion {
+    width: min(80%, 500px);
     position: absolute;
     flex-direction: column;
     justify-content: space-between;

@@ -65,6 +65,29 @@ $(document).ready(function() {
         }
     })
 
+    $(document).click(closeProfileInfosIfOpen)
+
+    function closeProfileInfosIfOpen(e) {
+        
+        //PREVENT REST OF FUNCTION EXECUTION ON PROFILE ICON PRESS CAUSE ITS BEHAVIOUR IS ALREADY HANDLED
+        if(e.target === $("#profileBtn").find("img")[0]) {
+            return
+        }
+
+        let container = $("#profileInfos")
+
+        //CHECK IF PROFILE INFOS DIV IS OPEN
+        if(container.css("display") != "flex") {
+            return
+        }
+
+        // if the target of the click isn't the container nor a descendant of the container
+        if (!container.is(e.target) && container.has(e.target).length === 0) 
+        {
+            container.hide();
+        }
+    }
+
     /*$(".addedElements").on("touchstart", ".memoNote", function() {
         tapStart($(this))
     })

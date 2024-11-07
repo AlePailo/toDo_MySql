@@ -68,6 +68,7 @@ body {
 #profileInfos {
     position: absolute;
     width: 300px;
+    text-overflow: ellipsis;
     top: 80%;
     right: 2.5%;
     padding: 1em;
@@ -76,7 +77,6 @@ body {
     font-size: 1.5em;
     border: 1px solid var(--main-char-color);
     background: var(--secondary-bg);
-    display: flex;
     flex-direction: column;
     align-content: center;
     justify-content: center;

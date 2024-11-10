@@ -12,7 +12,8 @@
 </head>
 <body>
     <section class="container">
-        <article id="navMenu">
+        <!-- NAV MENU -->
+        <article class="container" id="navMenu">
             <div id="navOptions">
                 <span id="backBtn"><img class="material-icons" src="media/icons/arrowBackIcon.svg" alt=""></span>
                 <span id="deleteBtn"><img class="material-icons" src="media/icons/deleteIcon.svg" alt=""></span>
@@ -21,15 +22,8 @@
                 <span id="helpBtn"><img class="material-icons" src="media/icons/helpIcon.svg" alt=""></span>
                 <span id="profileBtn"><img class="material-icons" src="media/icons/profileIcon.svg" alt=""></span>
             </div>
-            
-            
-            <!--<div id="navBackDiv">
-                <span id="backBtn"><img class="material-icons" src="media/icons/arrowBackIcon.svg" alt=""></span>
-            </div>
-            <div id="navOptionsDiv">
-                <span id="deleteBtn"><img class="material-icons" src="media/icons/deleteIcon.svg" alt=""></span>
-                <span id="profileBtn"><img class="material-icons" src="media/icons/profileIcon.svg" alt=""></span>
-            </div>-->
+
+            <!--Profile infos popup (position absolutely to the nav menu)-->
             <div id="profileInfos">
                 <div>
                     <p></p>
@@ -38,11 +32,8 @@
                 <button id="btnLogOut">Esci</button>
             </div>
         </article>
-        <div id="loadingCircleDiv" class="identification">
-            <svg viewBox="25 25 50 50">
-                <circle r="20" cy="50" cx="50"></circle>
-            </svg>
-        </div>
+
+        <!-- LOGIN FORM -->
         <form class="identification loginForm" id="loginForm" method="POST">
             <div>
                 <input type="email" name="loginEmail" id="loginEmail" required>
@@ -59,6 +50,8 @@
             </div>
             <p id="linkToRegistration">Non hai un account? Registrati</p>
         </form>
+
+        <!-- REGISTRATION FORM -->
         <form class="identification registrationForm" id="registrationForm" method="POST">
             <div>
                 <input type="text" name="registrationUsername" id="registrationUsername" required>
@@ -79,14 +72,20 @@
                 <button id="btnRegistration" type="button">REGISTRATI</button>
             </div>
         </form>
+        
+        <!-- FORM ERRORS DISPLAY -->
+        <p id="formNotification"></p>
+
+        <!-- NOTES DISPLAY PAGE -->
         <article class="addedElements">
-            <div id="userInputsDiv">
+            <div class="container" id="userInputsDiv">
                 <input placeholder="Scrivi" type="text" name="userInput" id="userInput">
                 <span id="btnMic"><img class="material-icons" src="media/icons/micIcon.svg" alt=""></span>
                 <span id="btnSend"><img class="material-icons" src="media/icons/sendIcon.svg" alt=""></span>
             </div>
         </article>
-        <p id="formNotification"></p>
+
+        <!-- DELETION CONFIRMATION POPUP -->
         <dialog id="confirmDeletion">
             <p>Eliminare le note selezionate ?</p>
             <p>
@@ -94,6 +93,8 @@
                 <span>Conferma</span>
             </p>
         </dialog>
+
+        <!-- HELPBOX POPUP -->
         <dialog id="helpBox">
             <ul>
                 <li>
@@ -115,6 +116,13 @@
             </ul>
             <button id="btnCloseHelpBox">CHIUDI</button>
         </dialog>
+
+        <!-- LOADING CIRCLE -->
+        <div id="loadingCircleDiv" class="identification">
+            <svg viewBox="25 25 50 50">
+                <circle r="20" cy="50" cx="50"></circle>
+            </svg>
+        </div>
     </section>
 
     <script src="script.js"></script>

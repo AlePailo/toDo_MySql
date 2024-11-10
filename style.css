@@ -1,3 +1,4 @@
+/* RESET */
 *,
 *::before,
 *::after {
@@ -14,6 +15,8 @@
 }
 
 
+
+/* CUSTOM PROPS */
 :root {
     --secondary-bg: #262626;
     --main-bg: #0B1215;
@@ -23,6 +26,9 @@
     --details : #0047b3;
 }
 
+
+
+/* GENERIC CSS */
 body {
     background: var(--main-bg);
     color: var(--main-char-color);
@@ -30,21 +36,70 @@ body {
     touch-action: manipulation;
 }
 
-.container, #userInputsDiv {
-    width: clamp(300px, 95%, 800px);
+.container {
+    --container-width: clamp(300px, 95%, 800px);
+    width: var(--container-width);
     margin: 0 auto;
 }
 
+input {
+    color: var(--main-char-color);
+    border-radius: 10px;
+    border: 1px solid var(--off-focus-input);
+    font-size: 1.25em;
+    transition: border 0.25s ease;
+}
+
+input:focus {
+    border: 1px solid var(--main-char-color);
+}
+
+button {
+    height: 60px;
+    width: 100%;
+    font-weight: 600;
+    padding: 0.5em;
+    border-radius: 10px;
+    font-size: 1.25em;
+}
+
+label {
+    position: absolute;
+    left: 5%;
+    top: -25%;
+    background: var(--main-bg);
+    padding: 0.25em 0.5em;
+}
+
+.material-symbols-outlined {
+    font-variation-settings:
+    'FILL' 1,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
+    font-size: 35px !important;
+}
+
+svg {
+    width: 3.25em;
+    transform-origin: center;
+    animation: rotate4 2s linear infinite;
+}
+
+.material-icons { 
+    transform: scale(1.5);
+}
+
+
+/* NAV MENU ELEMENTS */
 #navMenu {
-    width: clamp(300px, 95%, 800px);
     height: 10svh;
     padding-inline: 1rem;
     position: fixed;
-    background: transparent;
     z-index: 999;
 }
 
-#navMenu div:not(:last-of-type){
+#navMenu div:not([id="profileInfos"]){
     width: 100%;
     height: 100%;
     align-items: center;
@@ -84,10 +139,9 @@ body {
     display: none;
 }
 
-/*#deleteBtn {
-    display: none;
-}*/
 
+
+/* NOTES DISPLAY PAGE AND FORMS GENERIC CSS */
 .identification, .addedElements {
     height: 90svh;
     padding-top: 10svh;
@@ -96,6 +150,9 @@ body {
     flex-wrap: wrap;
 }
 
+
+
+/* LOGIN AND REGISTRATION FORMS ELEMENTS */
 .identification {
     gap: 2.5em;
     flex-direction: column;
@@ -117,18 +174,6 @@ body {
     align-items: center;
 }
 
-input {
-    color: var(--main-char-color);
-    border-radius: 10px;
-    border: 1px solid var(--off-focus-input);
-    font-size: 1.25em;
-    transition: border 0.25s ease;
-}
-
-input:focus {
-    border: 1px solid var(--main-char-color);
-}
-
 .identification input {
     background: var(--main-bg);
     outline: var(--main-char-color);
@@ -140,32 +185,6 @@ input:focus {
 
 .identification p {
     text-decoration: underline;
-}
-
-label {
-    position: absolute;
-    left: 5%;
-    top: -25%;
-    background: var(--main-bg);
-    padding: 0.25em 0.5em;
-}
-
-button {
-    height: 60px;
-    width: 100%;
-    font-weight: 600;
-    padding: 0.5em;
-    border-radius: 10px;
-    font-size: 1.25em;
-}
-
-.material-symbols-outlined {
-    font-variation-settings:
-    'FILL' 1,
-    'wght' 400,
-    'GRAD' 0,
-    'opsz' 24;
-    font-size: 35px !important;
 }
 
 .registrationForm {
@@ -203,6 +222,51 @@ button {
     padding: 0 0.25em;
 }
 
+#userInputsDiv span {
+    background: var(--details);
+    padding: 15px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+}
+
+
+/* NOTES DISPLAY PAGE ELEMENTS */
+.addedElements {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    display: none;
+    gap: 20px;
+    align-items: flex-start;
+    align-content: flex-start;
+}
+
+.addedElements p {
+    overflow-wrap: anywhere;
+    background: var(--secondary-bg);
+    padding: 1em;
+    border-radius: 10px;
+    height: max-content;
+    outline: 0;
+    position: relative;
+}
+
+[data-selected = "true"] {
+    background: var(--on-focus-memo) !important;
+}
+
+.checkSelect {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    transform: scale(1.35);
+    accent-color: var(--details);
+    display: none;
+}
+
+
+
+/* USER NOTES INPUT ELEMENTS */
 #userInput {
     width: 85%;
     height: 50px;
@@ -228,43 +292,8 @@ button {
 }
 
 
-#userInputsDiv span {
-    background: var(--details);
-    padding: 15px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-}
 
-.addedElements {
-    display: none;
-    gap: 20px;
-    align-items: flex-start;
-    align-content: flex-start;
-}
-
-.addedElements p {
-    background: var(--secondary-bg);
-    padding: 1em;
-    border-radius: 10px;
-    height: max-content;
-    outline: 0;
-    position: relative;
-}
-
-[data-selected = "true"] {
-    background: var(--on-focus-memo) !important;
-}
-
-.checkSelect {
-    position: absolute;
-    top: -12.5%;
-    right: -5%;
-    transform: scale(1.35);
-    accent-color: var(--details);
-    display: none;
-}
-
+/* POPUP ELEMENTS */
 dialog {
     left: 50%;
     top: 50%;
@@ -278,7 +307,7 @@ dialog {
 
 #helpBox {
     position: fixed;
-    width: calc(80 / 100 * clamp(300px, 95%, 800px));
+    width: calc(80 / 100 * var(--container-width));
     height: 80vh;
     outline: 0;
     border: 1px solid var(--main-char-color);
@@ -301,9 +330,9 @@ dialog {
 }
 
 #helpBox ul {
-    max-height: 85%;
+    max-height: 88.5%;
     list-style-type: none;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 #helpBox li {
@@ -347,14 +376,10 @@ dialog {
 
 
 
+
+/* LOADING CIRCLE */
 #loadingCircleDiv {
     display: none;
-}
-
-svg {
-    width: 3.25em;
-    transform-origin: center;
-    animation: rotate4 2s linear infinite;
 }
    
 circle {
@@ -387,9 +412,4 @@ circle {
     100% {
      stroke-dashoffset: -125px;
     }
-}
-
-
-.material-icons { 
-    transform: scale(1.5);
 }

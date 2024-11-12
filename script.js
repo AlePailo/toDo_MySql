@@ -306,7 +306,7 @@ $(document).ready(function() {
     })
 
     $("#registrationForm").submit(function() {
-        $(this).hide(1000)
+        //$(this).hide(1000)
         location.reload()
     })
 
@@ -581,20 +581,32 @@ function logOut() {
 }
 
 function getProfileInfos() {
-    let cookieStr = document.cookie
-    console.log(cookieStr)
-    let username = cookieStr.substring(
-        cookieStr.indexOf("=") + 1, 
-        cookieStr.indexOf(";")
-    )
-    let email = document.cookie.substring(
-        cookieStr.lastIndexOf("=") + 1,
-        cookieStr.length
-    )
-    $("#profileInfos p:first").text(username)
-    $("#profileInfos p:last").text(email.replace("%40", "@"))
+    const cookieArr = formatProfileInfos()
+
+    $("#profileInfos p:first").text(cookieArr[0])
+    $("#profileInfos p:last").text(cookieArr[1])
 }
 
+function formatProfileInfos() {
+    let cookieStr = document.cookie
+    //console.log(cookieStr)
+    let cookieArr = cookieStr.split(";")
+    cookieArr[1] = cookieArr[1].trim()
+    let email = getDataFromCookieArr(cookieArr, "email=")
+    let username = getDataFromCookieArr(cookieArr, "username=")
+    email = email.substring(email.indexOf("=") + 1, email.length).replace("%40", "@")
+    username = username.substring(username.indexOf("=") + 1, username.length)
+    return [username, email]
+}
+
+
+function getDataFromCookieArr(arr, el) {
+    let res = arr.filter(cookieEl => {
+        return cookieEl.startsWith(el)
+    }).join()
+
+    return res
+}
 
 
 
@@ -734,3 +746,7 @@ function detectDoubleClick(el) {
         el[0].focus()
     }
 }
+
+if ( window.history.replaceState ) {
+    window.history.replaceState( null, null, window.location.href );
+  }

@@ -56,7 +56,7 @@ function checkLastId($pdo) {
 }
 
 
-//FILL PAGE WITH USERS MEMO
+//FILL PAGE WITH USER'S MEMO
 function populateApp($pdo) {
     $userEmail = $_COOKIE["email"];
     $stmt = $pdo->prepare("SELECT content, id FROM todos WHERE user_email = ? ORDER BY pub_date");

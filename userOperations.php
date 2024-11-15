@@ -7,6 +7,7 @@ require_once("dbConnection.php");
 //LOGOUT REQUEST
 if(isset($_GET["action"]) && $_GET["action"] == "logout") {
     setcookie("username",  "", time() - 3600);
+    setcookie("email",  "", time() - 3600);
 }
 
 

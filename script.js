@@ -14,36 +14,22 @@ $(document).ready(function() {
     //NAVBAR EVENTS
 
     //(?) icon press => open help box popup
-    $("#helpBtn").click(function() {
-        $("#helpBox")[0].showModal()    
-    })
+    $("#helpBtn").click(() => $("#helpBox")[0].showModal())
 
     //close help box on its close button press
-    $("#btnCloseHelpBox").click(function() {
-        $("#helpBox")[0].close()
-    })
+    $("#btnCloseHelpBox").click(() => $("#helpBox")[0].close())
 
     //profile icon press => toggle profile infos popup
-    $("#profileBtn").click(function() {
-        if($("#profileInfos").css("display") === "none") {
-            $("#profileInfos").css("display", "flex")
-            return
-        }
-        $("#profileInfos").css("display", "none")
-    })
+    $("#profileBtn").click(toggleprofileInfosPopup)
 
     //profile infos popup button press => logout
-    $("#btnLogOut").click(function() {
-        logOut()
-    })
+    $("#btnLogOut").click(logOut)
 
     //back arrow icon events
     $("#backBtn").click(handleBackBtnClick)
 
     //deletion icon press => brings confirm deletion popup 
-    $("#deleteBtn").click(function() {
-        $("#confirmDeletion").css("display", "flex")
-    })
+    $("#deleteBtn").click(() => $("#confirmDeletion").css("display", "flex"))
 
 
 
@@ -66,21 +52,13 @@ $(document).ready(function() {
     //CONFIRM DELETION POPUP EVENTS
 
     //confirm deletion popup left option press => cancel memo deletion
-    $("#confirmDeletion p span:first").click(function() {
+    $("#confirmDeletion").find("span:first").click(function() {
         $("#confirmDeletion").css("display", "none")
         resetSelection()
     })
 
     //confirm deletion popup right option press => confirm memo deletion
-    $("#confirmDeletion p span:last").click(function() {
-        let idsArr = $("[data-selected=true]").map(function() {
-            return this.id
-        }).get()
-        console.log(idsArr)
-        deleteMemo(idsArr)
-        resetSelection()
-        $("#confirmDeletion").css("display", "none")
-    })
+    $("#confirmDeletion").find("span:last").click(performDeletion)
 
 
 
@@ -109,50 +87,13 @@ $(document).ready(function() {
     
     $(".addedElements").on("blur", "p", updateMemo)
 
-    function updateMemo() {
-        $(this).attr("contentEditable", false)
-        if(checkMemoValueVariations($(this), $(this).text()) !== true) {
-            return
-        }
-
-        let memoId = $(this).attr("id")
-        let newText = $(this).text()
-
-        const memoInfos = {
-            changedMemoID : memoId,
-            newMemoText : newText
-        }
-        ajaxPostRequest("notesOperations.php", memoInfos)
-    }
-
-    
-    $(".addedElements").on("click", ".checkSelect", function() {
-        console.log("CHECKBOX")
-    })
+    /*$(".addedElements").on("click", "input[type='checkbox']", function(e) {
+        e.preventDefault()
+    })*/
 
 
     $(document).click(closeProfileInfosIfOpen)
 
-    function closeProfileInfosIfOpen(e) {
-        
-        //PREVENT REST OF FUNCTION EXECUTION ON PROFILE ICON PRESS CAUSE ITS BEHAVIOUR IS ALREADY HANDLED
-        if(e.target === $("#profileBtn").find("img")[0]) {
-            return
-        }
-
-        let container = $("#profileInfos")
-
-        //CHECK IF PROFILE INFOS DIV IS OPEN
-        if(container.css("display") != "flex") {
-            return
-        }
-
-        // if the target of the click isn't the container nor a descendant of the container
-        if (!container.is(e.target) && container.has(e.target).length === 0) 
-        {
-            container.hide();
-        }
-    }
 
     /*$(".addedElements").on("touchstart", ".memoNote", function() {
         tapStart($(this))
@@ -169,185 +110,45 @@ $(document).ready(function() {
         tapStart($(this))
     })*/
 
-    $(".addedElements").on("pointerdown", ".memoNote", function(e) {
-        switch(e.pointerType) {
-            case "mouse" : 
-                tapStart($(this))
-                break
-            case "touch" : 
-                tapStart($(this))
-                break
-        }
-    })
+    //MEMO CLICK EVENTS BASED ON POINTER TYPE (mouse or touch)
 
-    $(".addedElements").on("pointerup", ".memoNote", function(e) {
-        switch(e.pointerType) {
-            case "mouse" : 
-                tapEnd($(this))
-                break
-            case "touch" : 
-                tapEnd($(this))
-                break
-        }
-    })
+    $(".addedElements").on("pointerdown", ".memoNote", checkPointerType)
+
+    $(".addedElements").on("pointerup", ".memoNote", checkPointerType)
 
     $(".addedElements").on("touchmove mousemove", ".memoNote", function() {
-        /*if(localStorage.getItem("itemsSelected") != "true") {
-            tapEnd($(this))
-        }*/
         if(utilityVars.itemsSelected != true) {
             tapEnd($(this))
         }
     })
 
     
-
+    //HIDE FORM ERRORS NOTIFICATIONS WHEN CLICKING ON AN INPUT FIELD
     $("input").focus(function() {
         $("#formNotification").hide()
     })
 
+    //LINK FROM LOGIN FORM TO REGISTRATION FORM CLICK
     $("#linkToRegistration").click(function() {
+        showRegistrationForm()
         hideLoginForm()
-        $("#registrationForm").css("display", "flex")
-        $("#navOptions").css("display", "flex")
-        $("#deleteBtn").css("visibility", "hidden")
     })
+
+    
 
 
     //INPUTS' ICONS CLICK EVENT 
-    $(".identification input ~ span").click(function() {
+    $(".identification").find("input ~ span").click(focusSiblingInput)
 
-        //focus parent input
-        let input = $(this).siblings("input")
-        let imgDataCover = $(this).find("img").attr("data-cover")
-        input.focus()
-        
-        //set caret after last input character and toggle show/hide password field value
-        setCursorAtInputEnd(input[0])
-
-
-        //return if it's not the passowrd field
-        if(typeof imgDataCover === "undefined" || typeof imgDataCover === false) {
-            return
-        }
-
-        if(imgDataCover === "cover") {
-            $(this).find("img").attr("src", "media/icons/pswShowIcon.svg")
-            $(this).find("img").attr("data-cover", "show")
-            $(this).siblings("input").attr("type", "text")
-            return
-        }
-
-        $(this).find("img").attr("src", "media/icons/pswHideIcon.svg")
-        $(this).find("img").attr("data-cover", "cover")
-        $(this).siblings("input").attr("type", "password")
-
-    })
-
-    /*$("#btnLogin").click(function() {
-        const email = $("#loginEmail").val()
-        const psw = $("#loginPsw").val()
-
-        $.ajax({
-            type : "POST",
-            url : "userOperations.php",
-            data : {
-                loginAttemptEmail : email,
-                loginAttemptPsw : psw
-            },
-            success: function(data) {
-                data = JSON.parse(data)
-                console.log(data)
-                if(data !== "Logged in successfully") {
-                    $("#formNotification").show().text(data).css("background", "#BB0A21")
-                    return false
-                }
-                //hideLoginForm()
-                //showMemoPage()
-                window.location.reload()
-            }
-        })
-    })*/
-
+    //LOGIN FORM BUTTON CLICK EVENT
     $("#btnLogin").click(tryLogin)
 
-    function tryLogin() {
-        const email = $("#loginEmail").val()
-        const psw = $("#loginPsw").val()
-
-        const userInfo = {
-            loginAttemptEmail : email,
-            loginAttemptPsw : psw
-        }
-
-        ajaxPostRequest("userOperations.php", userInfo, successfulLogin)
-    }
-
-    function successfulLogin(data) {
-        data = JSON.parse(data)
-        if(data !== "Logged in successfully") {
-            $("#formNotification").show().text(data).css("background", "#BB0A21")
-            return false
-        }
-        location.reload()
-    }
-
-
-
-    
-    /*$("#btnRegistration").click(function() {
-        const username = $("#registrationUsername").val()
-        const email = $("#registrationEmail").val()
-        const psw = $("#registrationPsw").val()
-
-        $.ajax({
-            type : "POST",
-            url : "userOperations.php",
-            data : {
-                regAttemptUsername : username,
-                regAttemptEmail : email,
-                regAttemptPsw : psw
-            },
-            success : function(data) {
-                data = JSON.parse(data)
-                if(data != "Valid") {
-                    $("#formNotification").show().text(data).css("background", "#BB0A21")
-                    return false
-                }
-                sendForm()
-            }
-        })
-    })*/
-
+    //REGISTRATION FORM BUTTON CLICK EVENT
     $("#btnRegistration").click(tryRegistration)
 
-    function tryRegistration() {
-        const username = $("#registrationUsername").val()
-        const email = $("#registrationEmail").val()
-        const psw = $("#registrationPsw").val()
 
-        const userInfo = {
-            regAttemptUsername : username,
-            regAttemptEmail : email,
-            regAttemptPsw : psw
-        }
-
-        ajaxPostRequest("userOperations.php", userInfo, successfulRegValidation)
-    }
-
-    function successfulRegValidation(data) {
-        data = JSON.parse(data)
-        if(data != "Valid") {
-            $("#formNotification").show().text(data).css("background", "#BB0A21")
-            return false
-        }
-        sendForm()
-    }
-
-
-
+    //REGISTRATION SUBMIT EVENT (triggered by #btnRegistration after successful validation)
     $("#registrationForm").submit(function() {
-        //$(this).hide(1000)
         location.reload()
     })
 
@@ -374,10 +175,157 @@ function handleBackBtnClick() {
         return
     }
     //otherwise switch from registration to login form
-    $("#registrationForm").hide()
-    $("#deleteBtn").css("visibility", "visible")
+    hideRegistrationForm()
     showLoginForm()
 }
+
+
+function performDeletion() {
+    //get all selected notes' (data-selected=true) id
+    let idsArr = $("[data-selected=true]").map(function() {
+        return this.id
+    }).get()
+    console.log(idsArr)
+    deleteMemo(idsArr)
+    resetSelection()
+    $("#confirmDeletion").css("display", "none")
+}
+
+
+function closeProfileInfosIfOpen(e) {
+        
+    //PREVENT REST OF FUNCTION EXECUTION ON PROFILE ICON PRESS CAUSE ITS BEHAVIOUR IS ALREADY HANDLED
+    if(e.target === $("#profileBtn").find("img")[0]) {
+        return
+    }
+
+    let container = $("#profileInfos")
+
+    //CHECK IF PROFILE INFOS DIV IS OPEN
+    if(container.css("display") != "flex") {
+        return
+    }
+
+    // if the target of the click isn't the container nor a descendant of the container
+    if (!container.is(e.target) && container.has(e.target).length === 0) 
+    {
+        container.hide();
+    }
+}
+
+function focusSiblingInput() {
+
+    //focus sibling input
+    let input = $(this).siblings("input")
+    input.focus()
+    
+    let imgDataCover = $(this).find("img").attr("data-cover")
+
+
+    //return if it's not the passowrd field
+    if(typeof imgDataCover === "undefined" || typeof imgDataCover === false) {
+        return
+    }
+
+    //set caret after last input character and toggle show/hide password field value
+    setCursorAtInputEnd(input[0])
+
+    togglePswVisibility(imgDataCover, $(this))
+
+}
+
+function togglePswVisibility(imgDataCover, span) {
+    if(imgDataCover === "cover") {
+        span.find("img").attr("src", "media/icons/pswShowIcon.svg")
+        span.find("img").attr("data-cover", "show")
+        span.siblings("input").attr("type", "text")
+        return
+    }
+
+    span.find("img").attr("src", "media/icons/pswHideIcon.svg")
+    span.find("img").attr("data-cover", "cover")
+    span.siblings("input").attr("type", "password")
+}
+
+function toggleprofileInfosPopup() {
+    if($("#profileInfos").css("display") === "none") {
+        $("#profileInfos").css("display", "flex")
+        return
+    }
+    $("#profileInfos").css("display", "none")
+}
+
+
+//LOGIN LOGIC FUNCTION
+
+function tryLogin() {
+    const email = $("#loginEmail").val()
+    const psw = $("#loginPsw").val()
+
+    const userInfo = {
+        loginAttemptEmail : email,
+        loginAttemptPsw : psw
+    }
+
+    ajaxPostRequest("userOperations.php", userInfo, successfulLogin)
+}
+
+function successfulLogin(data) {
+    data = JSON.parse(data)
+    if(data !== "Logged in successfully") {
+        $("#formNotification").show().text(data).css("background", "#BB0A21")
+        return false
+    }
+    location.reload()
+}
+
+function checkPointerType(e) {
+    e.stopPropagation()
+    if(e.type === "pointerdown") {
+        handlePointerType(e, tapStart, $(this))
+    } else if(e.type === "pointerup") {
+        handlePointerType(e, tapEnd, $(this))
+    }
+}
+
+function handlePointerType(e, func, el) {
+    switch(e.pointerType) {
+        case "mouse" :
+            func(el)
+            break
+        case "touch" :
+            func(el)
+            break
+    }
+}
+
+
+//REGISTRATION LOGIC FUNCTION
+
+function tryRegistration() {
+    const username = $("#registrationUsername").val()
+    const email = $("#registrationEmail").val()
+    const psw = $("#registrationPsw").val()
+
+    const userInfo = {
+        regAttemptUsername : username,
+        regAttemptEmail : email,
+        regAttemptPsw : psw
+    }
+
+    ajaxPostRequest("userOperations.php", userInfo, successfulRegValidation)
+}
+
+function successfulRegValidation(data) {
+    data = JSON.parse(data)
+    if(data != "Valid") {
+        $("#formNotification").show().text(data).css("background", "#BB0A21")
+        return false
+    }
+    sendForm()
+}
+
+
 
 
 //MEMO ELEMENT CREATION BASED ON USER INPUT
@@ -388,7 +336,7 @@ function handleBackBtnClick() {
         class: "memoNote"
     }).attr("spellcheck", "false")
     .attr("data-selected", false)
-    .appendTo('.addedElements')
+    .appendTo('.addedElements') 
     $("#userInput").val("")
 
     $('<input>',{
@@ -401,19 +349,6 @@ function handleBackBtnClick() {
 
 //MEMOS OPERATIONS FUNCTIONS
 
-/*function createMemo(text) {
-    $.ajax({
-        type : "POST",
-        url : "notesOperations.php",
-        data : {
-            text : text
-        },
-        success : function(data) {
-            data = JSON.parse(data)
-            buildMemoP(text, data[0].id)
-        }
-    })
-}*/
 function createMemo(memoText) {
     const memoObj = {
         text : memoText
@@ -435,26 +370,16 @@ function buildMemoP(text, id) {
     .attr("data-selected", false)
     .appendTo('.addedElements')
 
-    $('<input>',{
+    $("<div/>", {
+        class: "checkSelect"
+    }).appendTo(memo)
+
+    /*$('<input>',{
         class: "checkSelect"
     }).attr("type", "checkbox")
-    .appendTo(memo)
+    .appendTo(memo)*/
 }
 
-/*function deleteMemo(idsArr) {
-    $.ajax({
-        type : "POST",
-        url : "notesOperations.php?",
-        data : {
-            deletionArr : idsArr
-        },
-        success : function() {
-            idsArr.forEach(id => {
-                $(`p.memoNote[id=${id}]`).remove()
-            })
-        }
-    })
-}*/
 
 function deleteMemo(idsArr) {
     const idsObj = {
@@ -467,6 +392,23 @@ function successfullyDeletedMemo() {
     this.indexValue.deletionArr.forEach(id => {
         $(`p.memoNote[id=${id}]`).remove()
     })
+}
+
+
+function updateMemo() {
+    $(this).attr("contentEditable", false)
+    if(checkMemoValueVariations($(this), $(this).text()) !== true) {
+        return
+    }
+
+    let memoId = $(this).attr("id")
+    let newText = $(this).text()
+
+    const memoInfos = {
+        changedMemoID : memoId,
+        newMemoText : newText
+    }
+    ajaxPostRequest("notesOperations.php", memoInfos)
 }
 
 
@@ -569,9 +511,9 @@ function tapStart(el) {
     utilityVars.longPress = false
     //localStorage.setItem("longPress", false)
 
-    if(el.attr("data-selected") != "true" && utilityVars.itemsSelected === false) { //localStorage.getItem("itemsSelected") === "false"
+    /*if(el.attr("data-selected") != "true" && utilityVars.itemsSelected === false) { //localStorage.getItem("itemsSelected") === "false"
         el.attr("data-selected", true)
-    }
+    }*/
 
     utilityVars.timer = setTimeout(() => {
         utilityVars.timer = null
@@ -580,8 +522,14 @@ function tapStart(el) {
         
         $("#navProfile").hide()
         $("#navOptions").css("display", "flex")
-        $(".memoNote input:checkbox").show()
-        el.children("input").attr("checked", true)
+        //$(".memoNote").find("input:checkbox").show()
+        $(".memoNote").find("div").show()
+        console.log($(".memoNote").find("div"))
+        if(utilityVars.itemsSelected != true) {
+            //el.children("input").attr("checked", true)
+            el.attr("data-selected", true)
+            el.find("div").css("background", "var(--details)")
+        }
 
         utilityVars.longPress = true
         $("#userInput, #btnMic").click(resetSelection)
@@ -624,17 +572,29 @@ function tapEnd(el) {
     //TRIGGERED IF THERE'S ALREADY AT LEAST ONE MEMO NOTE SELECTED ON CLICK
     if(itemsSelected === true) {
         console.log("YUPPI")
+        console.log("was checked : " + el.find("input").is(":checked"))
         if(el.attr("data-selected") === "false") {
             el.attr("data-selected", true)
-            el.find("input").attr("checked", "checked")
+            el.find("div").css("background", "var(--details)")
+            //el.find("input").attr("checked", "checked")
             return
         }
+        /*if(!el.find("input").is(":checked")) {
+            el.find("input").attr("checked", "checked")
+            return
+        }*/
         el.attr("data-selected", false)
-        el.find("input").removeAttr("checked")
+        el.find("div").css("background", "#fffff2")
+        //el.find("input").removeAttr("checked")
         let checks = 0
-        $(".memoNote input:checkbox").each(function(index, value) {
-            console.log(this.checked)
+        /*$(".memoNote").find("input:checkbox").each(function(index, value) {
             if($(this).attr("checked")) {
+                checks++
+                console.log("check n" + index)
+            }
+        })*/
+        $(".memoNote").each(function(index, value) {
+            if($(this).attr("data-selected") === "true") {
                 checks++
                 console.log("check n" + index)
             }
@@ -646,15 +606,18 @@ function tapEnd(el) {
         }
     }
 
-    el.attr("data-selected", false)
+
+    //el.attr("data-selected", false)
 }
 
 function resetSelection() {
     $("#userInput, #btnMic").off("click")
     $("#navOptions").hide()
     $("#navProfile").css("display", "flex")
+    $(".memoNote").find(".checkSelect").hide()
     $(".memoNote").attr("data-selected", false)
-    $(".memoNote input").hide().removeAttr("checked")
+    $(".checkSelect").css("background", "#fffff2")
+    //$(".memoNote").find(".checkSelect").hide().removeAttr("checked")
     //localStorage.setItem("itemsSelected", false)
     utilityVars.itemsSelected = false
 
@@ -664,45 +627,53 @@ function resetSelection() {
     //el.css("background", "var(--secondary-bg)")
 }
 
-/*function getSessionVariables() {
-    $("#loadingCircleDiv").css("display", "flex")
-    $.ajax({
-        type: "POST",
-        url: "userOperations.php",
-        data: {
-            GetSessionVariables : "true" 
-        },
-        success : function(data) {
-            $("#loadingCircleDiv").hide()
-            data = JSON.parse(data)
-            if(data === true) {
-                showMemoPage()
-            } else {
-                showLoginForm()
-                //$("#loginForm").css("display", "flex")
-                //alert("Not logged in")
-            }
-        }
-    })
-}*/
+
+
+//PAGE DISPLAY FUNCTIONS
 
 function displayBasedOnCookie() {
+    //if cookie is set (user logged in) => show user's memo page
+    //if cookie isn't set => show login form
     if(document.cookie) {
+        console.log(document.cookie)
         showMemoPage()
         return
     }
     showLoginForm()
 }
 
+function showMemoPage() {
+    $("#navProfile").css("display", "flex")
+    getProfileInfos()
+    $(".addedElements").css("display", "flex")
+    populateApp()
+}
+
 function showLoginForm() {
     $("#loginForm").css("display", "flex")
-    $("#navOptions").hide()
     $("#navProfile").hide()
 }
 
 function hideLoginForm() {
     $("#loginForm").hide()
 }
+
+function showRegistrationForm() {
+    $("#registrationForm").css("display", "flex")
+    //display only the back button from options menu
+    $("#navOptions").css("display", "flex")
+    $("#deleteBtn").hide()
+}
+
+function hideRegistrationForm() {
+    $("#registrationForm").css("display", "none")
+    //reset options menu items and hide options menu
+    $("#navOptions").hide()
+    $("#deleteBtn").show()
+}
+
+
+
 
 function setCursorAtInputEnd(input) {
     let sel = window.getSelection();
@@ -806,9 +777,13 @@ function stopRegistration() {
     }
     toggleRecording()
     setTimeout(() => {
-      //$("#results").html(localStorage.getItem("speech"))
-      createMemo(localStorage.getItem("speech"))
-      //console.log(localStorage.getItem("speech"))
+        if(localStorage.getItem("speech") === "") {
+            console.log("NO TEXT")
+            return
+        }
+        //$("#results").html(localStorage.getItem("speech"))
+        createMemo(localStorage.getItem("speech"))
+        //console.log(localStorage.getItem("speech"))
     },500)
     $("#btnMic").css("transform", "scale(1)")
 }
@@ -854,16 +829,6 @@ function onSpeak(e) {
 }
 
 recognition.addEventListener('result', onSpeak)
-
-
-
-
-function showMemoPage() {
-    $("#navProfile").css("display", "flex")
-    getProfileInfos()
-    $(".addedElements").css("display", "flex")
-    populateApp()
-}
 
 
 function detectDoubleClick(el) {

@@ -255,15 +255,23 @@ svg {
     background: var(--on-focus-memo) !important;
 }
 
+/*.memoNote:has(> .checkSelect:checked){
+    background: var(--on-focus-memo) !important;
+}*/
+
 .checkSelect {
     position: absolute;
     top: -5px;
     right: -5px;
-    transform: scale(1.35);
-    accent-color: var(--details);
+    /*transform: scale(1.35);
+    accent-color: var(--details);*/
+    background: #fffff2;
+    border-radius: 50%;
+    width: 20px;
+    aspect-ratio: 1;
     display: none;
+    border: 1px solid var(--details);
 }
-
 
 
 /* USER NOTES INPUT ELEMENTS */

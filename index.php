@@ -79,7 +79,7 @@
         <!-- NOTES DISPLAY PAGE -->
         <article class="addedElements">
             <div class="container" id="userInputsDiv">
-                <input placeholder="Scrivi" type="text" name="userInput" id="userInput">
+                <input placeholder="Scrivi" type="text" name="userInput" id="userInput" spellcheck="false">
                 <span id="btnMic"><img class="material-icons" src="media/icons/micIcon.svg" alt=""></span>
                 <span id="btnSend"><img class="material-icons" src="media/icons/sendIcon.svg" alt=""></span>
             </div>

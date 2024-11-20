@@ -4,12 +4,6 @@ $(document).ready(function() {
     displayBasedOnCookie()
 
 
-    /*//RESETTING LOCAL STORAGE VARIABLES
-    localStorage.setItem("dblClickTime", 0)
-    localStorage.setItem("itemsSelected", false)
-    localStorage.setItem("longPress", false)*/
-
-
 
     //NAVBAR EVENTS
 
@@ -35,11 +29,15 @@ $(document).ready(function() {
 
     //USER INPUTS BOTTOM BAR EVENTS
 
-    //mic icon events based on device
-    $("#btnMic").on({
-        mousedown : recClickStart,
-        touchstart : recTapStart
-    })
+    //Mic icon press
+    /*$("#btnMic").on("mousedown touchstart", function(e) {
+        //e.preventDefault()
+        //check if mic icon is being long pressed
+        recStart(e)
+    })*/
+
+    $("#btnMic").on("mousedown touchstart", recStart)
+
 
     //send icon press => create memo with input text
     $("#btnSend").click(function() {
@@ -67,48 +65,12 @@ $(document).ready(function() {
     $(".addedElements").on("click", "p", function(){
         saveMemoValue($(this).text())
     })
-
-    /*$(".addedElements").on("blur", "p", function(){
-        $(this).attr("contentEditable", false)
-        if(checkMemoValueVariations($(this), $(this).text()) === true) {
-            $.ajax({
-                type : "POST",
-                url : "notesOperations.php",
-                data : {
-                    changedMemoID : $(this).attr("id"),
-                    newMemoText : $(this).text()
-                },
-                success : function() {
-                    
-                }
-            })
-        }
-    })*/
     
     $(".addedElements").on("blur", "p", updateMemo)
-
-    /*$(".addedElements").on("click", "input[type='checkbox']", function(e) {
-        e.preventDefault()
-    })*/
-
 
     $(document).click(closeProfileInfosIfOpen)
 
 
-    /*$(".addedElements").on("touchstart", ".memoNote", function() {
-        tapStart($(this))
-    })
-
-    $(".addedElements").on("touchend", ".memoNote", function() {
-        tapEnd($(this))
-
-        //GETS RID OF FIRST CLICK CHECKBOX BUG (REMOVE THIS AND TRY TO UNCHECK A CHECKBOX TO SEE)
-        //event.preventDefault()
-    })
-
-    $(".addedElements").on("click", ".memoNote", function() {
-        tapStart($(this))
-    })*/
 
     //MEMO CLICK EVENTS BASED ON POINTER TYPE (mouse or touch)
 
@@ -314,36 +276,17 @@ function tryRegistration() {
     }
 
     ajaxPostRequest("userOperations.php", userInfo, successfulRegValidation)
-}
 
-function successfulRegValidation(data) {
-    data = JSON.parse(data)
-    if(data != "Valid") {
-        $("#formNotification").show().text(data).css("background", "#BB0A21")
-        return false
+    
+    function successfulRegValidation(data) {
+        data = JSON.parse(data)
+        if(data != "Valid") {
+            $("#formNotification").show().text(data).css("background", "#BB0A21")
+            return false
+        }
+        sendForm()
     }
-    sendForm()
 }
-
-
-
-
-//MEMO ELEMENT CREATION BASED ON USER INPUT
-
-/*function createMemo(text) {
-    const el = $('<p/>',{
-        text: text,
-        class: "memoNote"
-    }).attr("spellcheck", "false")
-    .attr("data-selected", false)
-    .appendTo('.addedElements') 
-    $("#userInput").val("")
-
-    $('<input>',{
-        class: "checkSelect"
-    }).attr("type", "checkbox")
-    .appendTo(el)
-}*/
 
 
 
@@ -354,11 +297,11 @@ function createMemo(memoText) {
         text : memoText
     }
     ajaxPostRequest("notesOperations.php", memoObj, successfullyCreatedMemo)
-}
 
-function successfullyCreatedMemo(data) {
-    data = JSON.parse(data)
-    buildMemoP(this.indexValue.text, data[0].id)
+    function successfullyCreatedMemo(data) {
+        data = JSON.parse(data)
+        buildMemoP(this.indexValue.text, data[0].id)
+    }
 }
 
 function buildMemoP(text, id) {
@@ -373,11 +316,6 @@ function buildMemoP(text, id) {
     $("<div/>", {
         class: "checkSelect"
     }).appendTo(memo)
-
-    /*$('<input>',{
-        class: "checkSelect"
-    }).attr("type", "checkbox")
-    .appendTo(memo)*/
 }
 
 
@@ -386,12 +324,12 @@ function deleteMemo(idsArr) {
         deletionArr : idsArr
     }
     ajaxPostRequest("notesOperations.php", idsObj, successfullyDeletedMemo)
-}
 
-function successfullyDeletedMemo() {
-    this.indexValue.deletionArr.forEach(id => {
-        $(`p.memoNote[id=${id}]`).remove()
-    })
+    function successfullyDeletedMemo() {
+        this.indexValue.deletionArr.forEach(id => {
+            $(`p.memoNote[id=${id}]`).remove()
+        })
+    }
 }
 
 
@@ -436,41 +374,21 @@ function ajaxGetRequest(ajaxUrl, successFunction) {
 
 //FILL PAGE WITH USER'S MEMO FUNCTION
 
-/*function populateApp() {
-    $.ajax({
-        type : "GET",
-        url : "notesOperations.php?action=loadContent",
-        success : function(data) {
-            data = JSON.parse(data)
-            console.log(data)
-            
-            if(data === "No results") {
-                return
-            }
-
-            for(let el in data) {
-                console.log(data[el].content)
-                buildMemoP(data[el].content, data[el].id)
-            }
-        }
-    })
-}*/
-
 function populateApp() {
     ajaxGetRequest("notesOperations.php?action=loadContent", successfullyRequestedAllMemos)
-}
+    
+    function successfullyRequestedAllMemos(data) {
+        data = JSON.parse(data)
+        console.log(data)
+                
+        if(data === "No results") {
+            return
+        }
 
-function successfullyRequestedAllMemos(data) {
-    data = JSON.parse(data)
-    console.log(data)
-            
-    if(data === "No results") {
-        return
-    }
-
-    for(let el in data) {
-        console.log(data[el].content)
-        buildMemoP(data[el].content, data[el].id)
+        for(let el in data) {
+            console.log(data[el].content)
+            buildMemoP(data[el].content, data[el].id)
+        }
     }
 }
 
@@ -494,47 +412,31 @@ function checkMemoValueVariations(el, currentValue) {
 }
 
 
-//let timer = null
 
 //LONG TAP LOGIC
 
 function tapStart(el) {
 
-    /*if(localStorage.getItem("itemsSelected") != "true") {
-        detectDoubleClick(el)
-    }*/
+    //if there are notes selected ignore double click and long press behaviours
+    utilityVars.longPress = false
+
+    if(utilityVars.itemsSelected === true) {
+        return
+    }
 
     if(utilityVars.itemsSelected != true) {
         detectDoubleClick(el)
     }
 
-    utilityVars.longPress = false
-    //localStorage.setItem("longPress", false)
-
-    /*if(el.attr("data-selected") != "true" && utilityVars.itemsSelected === false) { //localStorage.getItem("itemsSelected") === "false"
-        el.attr("data-selected", true)
-    }*/
-
     utilityVars.timer = setTimeout(() => {
         utilityVars.timer = null
-        console.log("half second passed")
-
-        
         $("#navProfile").hide()
         $("#navOptions").css("display", "flex")
-        //$(".memoNote").find("input:checkbox").show()
         $(".memoNote").find("div").show()
-        console.log($(".memoNote").find("div"))
-        if(utilityVars.itemsSelected != true) {
-            //el.children("input").attr("checked", true)
-            el.attr("data-selected", true)
-            el.find("div").css("background", "var(--details)")
-        }
-
+        el.attr("data-selected", true)
+        el.find("div").css("background", "url(media/icons/checkIcon2.svg)")
         utilityVars.longPress = true
         $("#userInput, #btnMic").click(resetSelection)
-        //localStorage.setItem("longPress", true)
-
     }, 500)
 }
 
@@ -544,14 +446,8 @@ function clearTimer() {
 
 function tapEnd(el) {
     clearTimer()
-    //console.log(localStorage.getItem("longPress"))
-    //const isLongPressed = localStorage.getItem("longPress")
     const isLongPressed = utilityVars.longPress
     const itemsSelected = utilityVars.itemsSelected
-    //const itemsSelected = localStorage.getItem("itemsSelected")
-
-    //console.log("itemsSelected : " + localStorage.getItem("itemsSelected"))
-    console.log("longPress : " + isLongPressed)
 
 
     //DO NOTHING ON LONGPRESS WHILE THERE ARE NOTES SELECTED
@@ -564,7 +460,6 @@ function tapEnd(el) {
     if(isLongPressed === true) {
         console.log("TRUUUUUE")
         utilityVars.itemsSelected = true
-        //localStorage.setItem("itemsSelected", true)
         return
     }
 
@@ -575,24 +470,12 @@ function tapEnd(el) {
         console.log("was checked : " + el.find("input").is(":checked"))
         if(el.attr("data-selected") === "false") {
             el.attr("data-selected", true)
-            el.find("div").css("background", "var(--details)")
-            //el.find("input").attr("checked", "checked")
+            el.find("div").css("background", "url(media/icons/checkIcon2.svg)")
             return
         }
-        /*if(!el.find("input").is(":checked")) {
-            el.find("input").attr("checked", "checked")
-            return
-        }*/
         el.attr("data-selected", false)
         el.find("div").css("background", "#fffff2")
-        //el.find("input").removeAttr("checked")
         let checks = 0
-        /*$(".memoNote").find("input:checkbox").each(function(index, value) {
-            if($(this).attr("checked")) {
-                checks++
-                console.log("check n" + index)
-            }
-        })*/
         $(".memoNote").each(function(index, value) {
             if($(this).attr("data-selected") === "true") {
                 checks++
@@ -601,13 +484,9 @@ function tapEnd(el) {
         })
         if(checks == 0) {
             utilityVars.itemsSelected = false
-            //localStorage.setItem("itemsSelected", false)
             resetSelection()
         }
     }
-
-
-    //el.attr("data-selected", false)
 }
 
 function resetSelection() {
@@ -617,14 +496,7 @@ function resetSelection() {
     $(".memoNote").find(".checkSelect").hide()
     $(".memoNote").attr("data-selected", false)
     $(".checkSelect").css("background", "#fffff2")
-    //$(".memoNote").find(".checkSelect").hide().removeAttr("checked")
-    //localStorage.setItem("itemsSelected", false)
     utilityVars.itemsSelected = false
-
-
-
-    //$(".memoNote").attr("userSelected") === "true" ? $(this).css("background", "var(--on-focus-memo)") : $(this).css("background", "var(--secondary-bg)")
-    //el.css("background", "var(--secondary-bg)")
 }
 
 
@@ -681,16 +553,6 @@ function setCursorAtInputEnd(input) {
     sel.collapseToEnd();
 }
 
-/*function logOut() {
-    $.ajax({
-        type : "GET",
-        url : "userOperations.php?action=logout",
-        success: function() {
-            location.reload()
-        }
-    })
-}*/
-
 function logOut() {
     ajaxGetRequest("userOperations.php?action=logout", () => location.reload())
 }
@@ -704,7 +566,6 @@ function getProfileInfos() {
 
 function formatProfileInfos() {
     let cookieStr = document.cookie
-    //console.log(cookieStr)
     let cookieArr = cookieStr.split(";")
     cookieArr[1] = cookieArr[1].trim()
     let email = getDataFromCookieArr(cookieArr, "email=")
@@ -712,49 +573,30 @@ function formatProfileInfos() {
     email = email.substring(email.indexOf("=") + 1, email.length).replace("%40", "@")
     username = username.substring(username.indexOf("=") + 1, username.length)
     return [username, email]
+
+    function getDataFromCookieArr(arr, el) {
+        let res = arr.filter(cookieEl => {
+            return cookieEl.startsWith(el)
+        }).join()
+
+        return res
+    }
 }
 
 
-function getDataFromCookieArr(arr, el) {
-    let res = arr.filter(cookieEl => {
-        return cookieEl.startsWith(el)
-    }).join()
 
-    return res
-}
+//RECORDING FUNCTIONS
 
-
-
-
-// MOUSE EVENTS FUNCTIONS
-
-function recClickStart() {
-    document.addEventListener("mouseup", recClickEnd, true)
+function recStart() {
     startRegistration()
+    $(document).on("mouseup touchend", recEnd)
 }
-  
-function recClickEnd() {
+
+function recEnd(e) {
+    e.preventDefault()
     stopRegistration()
-    document.removeEventListener("mouseup", recClickEnd, true)
+    $(document).off("mouseup touchend", recEnd)
 }
-
-
-
-
-
-// MOBILE TOUCH EVENTS FUNCTIONS
-
-function recTapStart() {
-    document.addEventListener("touchend", recTapEnd, true)
-    startRegistration()
-}
-  
-function recTapEnd(e) {
-    //e.preventDefault()
-    stopRegistration()
-    document.removeEventListener("touchend", recTapEnd, true)
-}
-
 
 
 

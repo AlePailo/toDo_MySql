@@ -12,6 +12,7 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    -webkit-user-drag: none;
 }
 
 
@@ -266,11 +267,13 @@ svg {
     /*transform: scale(1.35);
     accent-color: var(--details);*/
     background: #fffff2;
+    background-size: cover;
+    background-position: 0%;
     border-radius: 50%;
     width: 20px;
     aspect-ratio: 1;
     display: none;
-    border: 1px solid var(--details);
+    outline: 1px solid var(--details);
 }
 
 

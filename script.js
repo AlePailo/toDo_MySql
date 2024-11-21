@@ -23,19 +23,13 @@ $(document).ready(function() {
     $("#backBtn").click(handleBackBtnClick)
 
     //deletion icon press => brings confirm deletion popup 
-    $("#deleteBtn").click(() => $("#confirmDeletion").css("display", "flex"))
+    $("#deleteBtn").click(() => $("#confirmDeletion")[0].showModal())//$("#confirmDeletion").css("display", "flex"))
 
 
 
     //USER INPUTS BOTTOM BAR EVENTS
 
     //Mic icon press
-    /*$("#btnMic").on("mousedown touchstart", function(e) {
-        //e.preventDefault()
-        //check if mic icon is being long pressed
-        recStart(e)
-    })*/
-
     $("#btnMic").on("mousedown touchstart", recStart)
 
 
@@ -51,7 +45,8 @@ $(document).ready(function() {
 
     //confirm deletion popup left option press => cancel memo deletion
     $("#confirmDeletion").find("span:first").click(function() {
-        $("#confirmDeletion").css("display", "none")
+        $("#confirmDeletion")[0].close()
+        //$("#confirmDeletion").css("display", "none")
         resetSelection()
     })
 
@@ -62,10 +57,12 @@ $(document).ready(function() {
 
     //NOTES DISPLAY ZONE EVENTS
 
+    //single click on memo
     $(".addedElements").on("click", "p", function(){
         saveMemoValue($(this).text())
     })
     
+    //memo out of focus
     $(".addedElements").on("blur", "p", updateMemo)
 
     $(document).click(closeProfileInfosIfOpen)
@@ -150,7 +147,8 @@ function performDeletion() {
     console.log(idsArr)
     deleteMemo(idsArr)
     resetSelection()
-    $("#confirmDeletion").css("display", "none")
+    $("#confirmDeletion")[0].close()
+    //$("#confirmDeletion").css("display", "none")
 }
 
 
@@ -593,7 +591,9 @@ function recStart() {
 }
 
 function recEnd(e) {
+    //prevent context menu popup on long press
     e.preventDefault()
+
     stopRegistration()
     $(document).off("mouseup touchend", recEnd)
 }

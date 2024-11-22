@@ -75,12 +75,6 @@ $(document).ready(function() {
 
     $(".addedElements").on("pointerup", ".memoNote", checkPointerType)
 
-    $(".addedElements").on("touchmove mousemove", ".memoNote", function() {
-        if(utilityVars.itemsSelected != true) {
-            tapEnd($(this))
-        }
-    })
-
     
     //HIDE FORM ERRORS NOTIFICATIONS WHEN CLICKING ON AN INPUT FIELD
     $("input").focus(function() {
@@ -110,6 +104,16 @@ $(document).ready(function() {
     $("#registrationForm").submit(function() {
         location.reload()
     })
+
+    $("#confirmDeletion").on('click', closeDelDialogOnBackdropClick)
+
+    function closeDelDialogOnBackdropClick(e) {
+        var rect = $("#confirmDeletion")[0].getBoundingClientRect()
+        var isInDialog = (rect.top <= e.clientY && e.clientY <= rect.top + rect.height && rect.left <= e.clientX && e.clientX <= rect.left + rect.width)
+        if (!isInDialog) {
+          $("#confirmDeletion")[0].close()
+        }
+    }
 
 })
 
@@ -182,7 +186,7 @@ function focusSiblingInput() {
     let imgDataCover = $(this).find("img").attr("data-cover")
 
 
-    //return if it's not the passowrd field
+    //return if it's not the passowrd field (detected by not having an icon with the "data-cover" attribute)
     if(typeof imgDataCover === "undefined" || typeof imgDataCover === false) {
         return
     }
@@ -241,6 +245,7 @@ function successfulLogin(data) {
 
 function checkPointerType(e) {
     e.stopPropagation()
+    console.log("check pointer type func :" + e.type)
     if(e.type === "pointerdown") {
         handlePointerType(e, tapStart, $(this))
     } else if(e.type === "pointerup") {
@@ -249,6 +254,7 @@ function checkPointerType(e) {
 }
 
 function handlePointerType(e, func, el) {
+    console.log("handle pointer type func :" + e.type)
     switch(e.pointerType) {
         case "mouse" :
             func(el)
@@ -356,7 +362,8 @@ function ajaxPostRequest(ajaxUrl, ajaxData, successFunction) {
         url : ajaxUrl,
         data : ajaxData,
         indexValue: ajaxData,
-        success : successFunction
+        success : successFunction,
+        error : ajaxErrorHandler
     })
 }
 
@@ -364,8 +371,13 @@ function ajaxGetRequest(ajaxUrl, successFunction) {
     $.ajax({
         type : "GET",
         url : ajaxUrl,
-        success : successFunction
+        success : successFunction,
+        error : ajaxErrorHandler
     })
+}
+
+function ajaxErrorHandler(xhr, status, error) {
+    console.error("Error: " + xhr.status + " (" + error + ")")
 }
 
 
@@ -415,6 +427,15 @@ function checkMemoValueVariations(el, currentValue) {
 
 function tapStart(el) {
 
+    //prevent long press trigger if leaving the memo with cursor
+    $(this).on("touchmove mousemove", function() {
+        tapEnd($(this))
+    })
+
+    if($("#profileInfos").css("display") === "flex") {
+        $("#profileInfos").hide()
+    }
+
     //if there are notes selected ignore double click and long press behaviours
     utilityVars.longPress = false
 
@@ -447,6 +468,8 @@ function tapEnd(el) {
     const isLongPressed = utilityVars.longPress
     const itemsSelected = utilityVars.itemsSelected
 
+    //remove event attached on tapStart
+    $(this).off("touchmove mousemove")
 
     //DO NOTHING ON LONGPRESS WHILE THERE ARE NOTES SELECTED
     if(isLongPressed === true && itemsSelected === true) {

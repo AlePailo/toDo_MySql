@@ -373,7 +373,7 @@ dialog::backdrop {
 }
 
 #confirmDeletion p:first-of-type {
-    font-size: 1.35em;
+    font-size: 1.15em;
     text-align: center;
 }
 
@@ -385,10 +385,13 @@ dialog::backdrop {
     width: 50%;
     text-align: center;
     padding: 1rem 0;
+    border-radius: 10px;
+    font-weight: 400;
+    font-size: 1.25em;
 }
 
 #confirmDeletion span:active {
-    background: var(--secondary-bg);
+    background: var(--on-focus-memo);
 }
 
 #confirmDeletion span:first-of-type {

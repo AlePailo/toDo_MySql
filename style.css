@@ -359,7 +359,7 @@ dialog::backdrop {
     height: max-content;
 }
 
-#confirmDeletion {
+#askDeletionConfirmation {
     width: min(80%, 500px);
     position: absolute;
     flex-direction: column;
@@ -368,20 +368,20 @@ dialog::backdrop {
     padding-top: 1.5em;
 }
 
-#confirmDeletion:modal {
+#askDeletionConfirmation:modal {
     display: flex;
 }
 
-#confirmDeletion p:first-of-type {
+#askDeletionConfirmation p:first-of-type {
     font-size: 1.15em;
     text-align: center;
 }
 
-#confirmDeletion p:last-of-type {
+#askDeletionConfirmation p:last-of-type {
     display: flex;
 }
 
-#confirmDeletion span {
+#askDeletionConfirmation span {
     width: 50%;
     text-align: center;
     padding: 1rem 0;
@@ -390,15 +390,15 @@ dialog::backdrop {
     font-size: 1.25em;
 }
 
-#confirmDeletion span:active {
+#askDeletionConfirmation span:active {
     background: var(--on-focus-memo);
 }
 
-#confirmDeletion span:first-of-type {
+#askDeletionConfirmation span:first-of-type {
     position: relative;
 }
 
-#confirmDeletion span:first-of-type::after{
+#askDeletionConfirmation span:first-of-type::after{
     content: "";
     height: 50%;
     border: 1px solid var(--main-char-color);

@@ -4,8 +4,57 @@ $(document).ready(function() {
     displayBasedOnCookie()
 
 
-
     //NAVBAR EVENTS
+    $(document).on("click", "#helpBtn", () => $("#helpBox")[0].showModal())
+    $(document).on("click", "#btnCloseHelpBox", () => $("#helpBox")[0].close())
+    $(document).on("click", "#profileBtn", toggleProfileInfos)
+    $(document).on("click", "#btnLogOut", logOut)
+    $(document).on("click", "#backBtn", handleBackBtnClick)
+    $(document).on("click", "#deleteBtn", () => $("#askDeletionConfirmation")[0].showModal())
+
+    //DELETION POPUP EVENTS
+    $(document).on("click", "#askDeletionConfirmation", closeDialogOnBackdropClick)
+    $(document).on("click", "#cancelDeletion", function() {
+        $("#askDeletionConfirmation")[0].close()
+        resetSelection()
+    })
+    $(document).on("click", "#confirmDeletion", performDeletion)
+
+    //USER INPUTS BOTTOM BAR EVENTS
+    $(document).on("mousedown touchstart", "#btnMic", recStart)
+    $(document).on("click", "#btnSend", function() {
+        createMemo($("#userInput").val())
+        $("#userInput").val("")
+    })
+
+    //MEMO EVENTS
+    $(document).on("pointerdown pointerup", ".memoNote", checkPointerType)
+    $(document).on("click", ".memoNote", saveMemoValue)
+    $(document).on("blur", ".memoNote", updateMemo)
+
+    //FORMS EVENTS
+    $(document).on("click", "#linkToRegistration", function() {
+        showRegistrationForm()
+        hideLoginForm()
+    })
+    $(document).on("click", ".identification input ~ span", focusSiblingInput)
+    $(document).on("click", "#btnLogin", tryLogin)
+    $(document).on("click", "#btnRegistration", tryRegistration)
+    $(document).on("submit", "#registrationForm", () => {location.reload()})
+    $(document).on("focus", "input", () => $("#formNotification").hide())
+
+    //PROVARE !
+    //const target = e.target.id ?? e.target.parentElement.id   -> gestisce solo null e undefined
+    //const target = e.target.id || e.target.parentElement.id   -> dovrebbe gestire anche 0 e ""  
+
+
+
+    //$(document).on("pointerup", ".memoNote", checkPointerType)
+
+
+    //$("#profileBtn").click(toggleProfileInfos)
+
+    /*
 
     //(?) icon press => open help box popup
     $("#helpBtn").click(() => $("#helpBox")[0].showModal())
@@ -14,7 +63,7 @@ $(document).ready(function() {
     $("#btnCloseHelpBox").click(() => $("#helpBox")[0].close())
 
     //profile icon press => toggle profile infos popup
-    $("#profileBtn").click(toggleprofileInfosPopup)
+    
 
     //profile infos popup button press => logout
     $("#btnLogOut").click(logOut)
@@ -23,111 +72,120 @@ $(document).ready(function() {
     $("#backBtn").click(handleBackBtnClick)
 
     //deletion icon press => brings confirm deletion popup 
-    $("#deleteBtn").click(() => $("#confirmDeletion")[0].showModal())//$("#confirmDeletion").css("display", "flex"))
+    $("#deleteBtn").click(() => $("#askDeletionConfirmation")[0].showModal())//$("#askDeletionConfirmation").css("display", "flex"))
+    */
 
 
-
-    //USER INPUTS BOTTOM BAR EVENTS
+    
 
     //Mic icon press
-    $("#btnMic").on("mousedown touchstart", recStart)
+    //$("#btnMic").on("mousedown touchstart", recStart)
 
 
     //send icon press => create memo with input text
-    $("#btnSend").click(function() {
+    /*$("#btnSend").click(function() {
         createMemo($("#userInput").val())
         $("#userInput").val("")
-    })
+    })*/
+
+    
 
 
 
-    //CONFIRM DELETION POPUP EVENTS
+    
 
-    //confirm deletion popup left option press => cancel memo deletion
-    $("#confirmDeletion").find("span:first").click(function() {
-        $("#confirmDeletion")[0].close()
-        //$("#confirmDeletion").css("display", "none")
+    //deletion popup left option press => cancel memo deletion
+    /*$("#cancelDeletion").click(function() {
+        $("#askDeletionConfirmation")[0].close()
         resetSelection()
-    })
+    })*/
+    
 
     //confirm deletion popup right option press => confirm memo deletion
-    $("#confirmDeletion").find("span:last").click(performDeletion)
+    //$("#confirmDeletion").click(performDeletion)
 
 
 
     //NOTES DISPLAY ZONE EVENTS
 
     //single click on memo
-    $(".addedElements").on("click", "p", function(){
-        saveMemoValue($(this).text())
-    })
+    /*$(".addedElements").on("click", "p", saveMemoValue)*/
     
     //memo out of focus
-    $(".addedElements").on("blur", "p", updateMemo)
-
-    $(document).click(closeProfileInfosIfOpen)
+    //$(".addedElements").on("blur", "p", updateMemo)
 
 
 
     //MEMO CLICK EVENTS BASED ON POINTER TYPE (mouse or touch)
 
-    $(".addedElements").on("pointerdown", ".memoNote", checkPointerType)
+    /*$(".addedElements").on("pointerdown", ".memoNote", checkPointerType)
 
-    $(".addedElements").on("pointerup", ".memoNote", checkPointerType)
+    $(".addedElements").on("pointerup", ".memoNote", checkPointerType)*/
 
     
     //HIDE FORM ERRORS NOTIFICATIONS WHEN CLICKING ON AN INPUT FIELD
-    $("input").focus(function() {
+    /*$("input").focus(function() {
         $("#formNotification").hide()
-    })
+    })*/
 
     //LINK FROM LOGIN FORM TO REGISTRATION FORM CLICK
-    $("#linkToRegistration").click(function() {
+    /*$("#linkToRegistration").click(function() {
         showRegistrationForm()
         hideLoginForm()
-    })
+    })*/
+    
 
     
 
 
     //INPUTS' ICONS CLICK EVENT 
-    $(".identification").find("input ~ span").click(focusSiblingInput)
+    //$(".identification").find("input ~ span").click(focusSiblingInput)
 
     //LOGIN FORM BUTTON CLICK EVENT
-    $("#btnLogin").click(tryLogin)
+    //$("#btnLogin").click(tryLogin)
 
     //REGISTRATION FORM BUTTON CLICK EVENT
-    $("#btnRegistration").click(tryRegistration)
+    //$("#btnRegistration").click(tryRegistration)
 
 
     //REGISTRATION SUBMIT EVENT (triggered by #btnRegistration after successful validation)
-    $("#registrationForm").submit(function() {
+    /*$("#registrationForm").submit(function() {
         location.reload()
-    })
+    })*/
 
-    $("#confirmDeletion").on('click', closeDelDialogOnBackdropClick)
+    //$("#askDeletionConfirmation").on('click', closeDialogOnBackdropClick)
 
-    function closeDelDialogOnBackdropClick(e) {
-        var rect = $("#confirmDeletion")[0].getBoundingClientRect()
-        var isInDialog = (rect.top <= e.clientY && e.clientY <= rect.top + rect.height && rect.left <= e.clientX && e.clientX <= rect.left + rect.width)
-        if (!isInDialog) {
-          $("#confirmDeletion")[0].close()
-        }
-    }
 
 })
 
-//GLOBALLY ACCESSIBLE VARIABLES KEPT IN THIS OBJECT TO AVOID POSSIBLE NAME CONFLICTS
+//GLOBALLY ACCESSIBLE VARIABLES KEPT IN THIS OBJECT TO AVOID POSSIBLE NAME CONFLICTS AND GLOBAL NAMESPACE POLLUTION
 const utilityVars = {
     timer : null,               //used to recognize a long press (held tap for more than 0.5s)
     itemsSelected : false,      //set to true if there's at least one memo selected
     longPress : false,          //set to true if the last click was a long press
     dblClickTime : 0,           //used to recognize a double click (two clicks on same memo in less than 0.75 sec)
-    clickedMemoId : null        //used to track last clicked memo (useful to recognize double click on same memo)
+    clickedMemoId : null,        //used to track last clicked memo (useful to recognize double click on same memo)
+    recognitionObj : new (window.SpeechRecognition || window.webkitSpeechRecognition)(),
+    recording : null,
+    results : null,
+    speech : "",
+    lastMemoValue : ""          //used to check if memo's value has changed
 }
 
+utilityVars.recognitionObj.continuous = true;
+utilityVars.recognitionObj.lang = "it-IT"
+
+
+
+function closeDialogOnBackdropClick(e) {
+    const dialog = $(this)[0]
+    const bounds = dialog.getBoundingClientRect()
+    const isClickInsideDialog = (bounds.top <= e.clientY && e.clientY <= bounds.top + bounds.height && bounds.left <= e.clientX && e.clientX <= bounds.left + bounds.width)
+    if (!isClickInsideDialog) dialog.close()
+}
+
+
 function sendForm() {
-    console.log($("#registrationForm"))
     $("#registrationForm").submit()
 }
 
@@ -145,42 +203,16 @@ function handleBackBtnClick() {
 
 function performDeletion() {
     //get all selected notes' (data-selected=true) id
-    let idsArr = $("[data-selected=true]").map(function() {
-        return this.id
-    }).get()
-    console.log(idsArr)
-    deleteMemo(idsArr)
+    const selectedIds = $("[data-selected=true]").map((_, el) => el.id).get()
+    deleteMemo(selectedIds)
     resetSelection()
-    $("#confirmDeletion")[0].close()
-    //$("#confirmDeletion").css("display", "none")
+    $("#askDeletionConfirmation")[0].close()
 }
 
-
-function closeProfileInfosIfOpen(e) {
-        
-    //PREVENT REST OF FUNCTION EXECUTION ON PROFILE ICON PRESS CAUSE ITS BEHAVIOUR IS ALREADY HANDLED
-    if(e.target === $("#profileBtn").find("img")[0]) {
-        return
-    }
-
-    let container = $("#profileInfos")
-
-    //CHECK IF PROFILE INFOS DIV IS OPEN
-    if(container.css("display") != "flex") {
-        return
-    }
-
-    // if the target of the click isn't the container nor a descendant of the container
-    if (!container.is(e.target) && container.has(e.target).length === 0) 
-    {
-        container.hide();
-    }
-}
 
 function focusSiblingInput() {
-
     //focus sibling input
-    let input = $(this).siblings("input")
+    const input = $(this).siblings("input")
     input.focus()
     
     let imgDataCover = $(this).find("img").attr("data-cover")
@@ -194,163 +226,198 @@ function focusSiblingInput() {
     //set caret after last input character and toggle show/hide password field value
     setCursorAtInputEnd(input[0])
 
-    togglePswVisibility(imgDataCover, $(this))
-
+    togglePswVisibility($(this))
 }
 
-function togglePswVisibility(imgDataCover, span) {
-    if(imgDataCover === "cover") {
-        span.find("img").attr("src", "media/icons/pswShowIcon.svg")
-        span.find("img").attr("data-cover", "show")
-        span.siblings("input").attr("type", "text")
-        return
+function setCursorAtInputEnd(input) {
+    let sel = window.getSelection();
+    sel.selectAllChildren(input);
+    sel.collapseToEnd();
+}
+
+function togglePswVisibility(span) {
+    const eyeIcon = span.find("img")
+    const pswInput = span.siblings("input")
+    const isPswHidden = eyeIcon.attr("data-cover") === "cover"
+    eyeIcon.attr({
+        src: isPswHidden ? "media/icons/pswShowIcon.svg" : "media/icons/pswHideIcon.svg",
+        "data-cover": isPswHidden ? "show" : "cover"
+    })
+    pswInput.attr("type", isPswHidden ? "text" : "password")
+}
+
+
+function toggleProfileInfos(e) {
+    e.stopPropagation()
+    const profileBtnIcon = $("#profileBtn").find("img")[0]
+    const profileInfosContainer = $("#profileInfos")
+
+    // Se clicchiamo sull'icona, alterniamo la visibilità
+    if (e.target === profileBtnIcon) {
+        const isContainerHidden = profileInfosContainer.css("display") === "none";
+        setProfileInfosVisibility(isContainerHidden);
+        return;
     }
 
-    span.find("img").attr("src", "media/icons/pswHideIcon.svg")
-    span.find("img").attr("data-cover", "cover")
-    span.siblings("input").attr("type", "password")
-}
-
-function toggleprofileInfosPopup() {
-    if($("#profileInfos").css("display") === "none") {
-        $("#profileInfos").css("display", "flex")
-        return
+    // Se clicchiamo fuori, chiudiamo il contenitore
+    if (!profileInfosContainer.is(e.target) && profileInfosContainer.has(e.target).length === 0) {
+        setProfileInfosVisibility(false);
     }
-    $("#profileInfos").css("display", "none")
 }
 
+// Funzione per gestire la visibilità del contenitore
+function setProfileInfosVisibility(isContainerHidden) {
+    const profileInfosContainer = $("#profileInfos");
 
-//LOGIN LOGIC FUNCTION
-
-function tryLogin() {
-    const email = $("#loginEmail").val()
-    const psw = $("#loginPsw").val()
-
-    const userInfo = {
-        loginAttemptEmail : email,
-        loginAttemptPsw : psw
+    if (isContainerHidden) {
+        profileInfosContainer.css("display", "flex")
+        //$(document).on("click", toggleProfileInfos);
+    } else {
+        profileInfosContainer.css("display", "none")
+        //$(document).off("click", toggleProfileInfos);
     }
-
-    ajaxPostRequest("userOperations.php", userInfo, successfulLogin)
 }
 
-function successfulLogin(data) {
-    data = JSON.parse(data)
-    if(data !== "Logged in successfully") {
-        $("#formNotification").show().text(data).css("background", "#BB0A21")
-        return false
-    }
-    location.reload()
-}
+
 
 function checkPointerType(e) {
-    e.stopPropagation()
-    console.log("check pointer type func :" + e.type)
-    if(e.type === "pointerdown") {
-        handlePointerType(e, tapStart, $(this))
-    } else if(e.type === "pointerup") {
-        handlePointerType(e, tapEnd, $(this))
+    e.stopPropagation();
+
+    //possible events and their actions 
+    const actions = {
+        "pointerdown": tapStart,
+        "pointerup": tapEnd
+    };
+
+    //if event exists in actions object call the handlePointerType function
+    const action = actions[e.type];
+    if (action) {
+        handlePointerType(e, action, $(this));
     }
 }
 
 function handlePointerType(e, func, el) {
-    console.log("handle pointer type func :" + e.type)
-    switch(e.pointerType) {
-        case "mouse" :
-            func(el)
-            break
-        case "touch" :
-            func(el)
-            break
+    //if the pointer type is valid execute the function and prevent calling it twice on touch
+    if (["mouse", "touch"].includes(e.pointerType)) {
+        func(el);
     }
 }
 
 
-//REGISTRATION LOGIC FUNCTION
+// Funzione generica per il parsing sicuro di JSON
+function safeParseJSON(data) {
+    try {
+        return JSON.parse(data);
+    } catch (error) {
+        console.error("Invalid JSON response:", data);
+        return null;
+    }
+}
 
-function tryRegistration() {
-    const username = $("#registrationUsername").val()
-    const email = $("#registrationEmail").val()
-    const psw = $("#registrationPsw").val()
+// Funzione per mostrare notifiche
+function showNotification(message, backgroundColor = "#BB0A21") {
+    $("#formNotification").show().text(message).css("background", backgroundColor);
+}
+
+// Funzione per gestire login
+function tryLogin() {
+    const email = $("#loginEmail").val();
+    const psw = $("#loginPsw").val();
 
     const userInfo = {
-        regAttemptUsername : username,
-        regAttemptEmail : email,
-        regAttemptPsw : psw
-    }
+        loginAttemptEmail: email,
+        loginAttemptPsw: psw
+    };
 
-    ajaxPostRequest("userOperations.php", userInfo, successfulRegValidation)
-
-    
-    function successfulRegValidation(data) {
-        data = JSON.parse(data)
-        if(data != "Valid") {
-            $("#formNotification").show().text(data).css("background", "#BB0A21")
-            return false
+    ajaxPostRequest("userOperations.php", userInfo, function(data) {
+        const parsedData = safeParseJSON(data);
+        if (!parsedData) {
+            showNotification("An error occurred. Please try again.");
+            return;
         }
-        sendForm()
-    }
+        parsedData !== "Logged in successfully"
+            ? showNotification(parsedData)
+            : location.reload();
+    });
 }
 
+// Funzione per gestire la registrazione
+function tryRegistration() {
+    const username = $("#registrationUsername").val();
+    const email = $("#registrationEmail").val();
+    const psw = $("#registrationPsw").val();
 
+    const userInfo = {
+        regAttemptUsername: username,
+        regAttemptEmail: email,
+        regAttemptPsw: psw
+    };
 
-//MEMOS OPERATIONS FUNCTIONS
+    ajaxPostRequest("userOperations.php", userInfo, function(data) {
+        const parsedData = safeParseJSON(data);
+        if (!parsedData) {
+            showNotification("An error occurred. Please try again.");
+            return;
+        }
+        if (parsedData !== "Valid") {
+            showNotification(parsedData);
+        } else {
+            sendForm();
+        }
+    });
+}
 
+// Funzione per creare un memo
 function createMemo(memoText) {
-    const memoObj = {
-        text : memoText
-    }
-    ajaxPostRequest("notesOperations.php", memoObj, successfullyCreatedMemo)
+    const memoObj = { text: memoText };
 
-    function successfullyCreatedMemo(data) {
-        data = JSON.parse(data)
-        buildMemoP(this.indexValue.text, data[0].id)
+    ajaxPostRequest("notesOperations.php", memoObj, function(data) {
+        const parsedData = safeParseJSON(data);
+        if (!parsedData) {
+            showNotification("Failed to create memo.");
+            return;
+        }
+        buildMemoP(memoText, parsedData[0]?.id); // Usa optional chaining per gestire risultati nulli/undefined
+    });
+}
+
+// Funzione per eliminare un memo
+function deleteMemo(idsArr) {
+    const idsObj = { deletionArr: idsArr };
+
+    ajaxPostRequest("notesOperations.php", idsObj, function() {
+        idsArr.forEach(id => $(`#${id}`).remove());
+    });
+}
+
+// Funzione per aggiornare un memo
+function updateMemo() {
+    $(this).attr("contentEditable", false);
+
+    const memoId = $(this).attr("id");
+    const newText = $(this).text();
+
+    if (checkMemoValueVariations($(this), newText)) {
+        ajaxPostRequest("notesOperations.php", {
+            changedMemoID: memoId,
+            newMemoText: newText
+        });
     }
 }
+
 
 function buildMemoP(text, id) {
     const memo = $('<p/>',{
-        text: text,
+        text,
         class: "memoNote",
-        id: id
-    }).attr("spellcheck", "false")
-    .attr("data-selected", false)
-    .appendTo('.addedElements')
+        id,
+        spellcheck: false,
+        "data-selected": false
+    }).appendTo('.addedElements')
 
     $("<div/>", {
         class: "checkSelect"
     }).appendTo(memo)
-}
-
-
-function deleteMemo(idsArr) {
-    const idsObj = {
-        deletionArr : idsArr
-    }
-    ajaxPostRequest("notesOperations.php", idsObj, successfullyDeletedMemo)
-
-    function successfullyDeletedMemo() {
-        this.indexValue.deletionArr.forEach(id => {
-            $(`p.memoNote[id=${id}]`).remove()
-        })
-    }
-}
-
-
-function updateMemo() {
-    $(this).attr("contentEditable", false)
-    if(checkMemoValueVariations($(this), $(this).text()) !== true) {
-        return
-    }
-
-    let memoId = $(this).attr("id")
-    let newText = $(this).text()
-
-    const memoInfos = {
-        changedMemoID : memoId,
-        newMemoText : newText
-    }
-    ajaxPostRequest("notesOperations.php", memoInfos)
 }
 
 
@@ -382,22 +449,22 @@ function ajaxErrorHandler(xhr, status, error) {
 
 
 
+
 //FILL PAGE WITH USER'S MEMO FUNCTION
 
 function populateApp() {
     ajaxGetRequest("notesOperations.php?action=loadContent", successfullyRequestedAllMemos)
     
     function successfullyRequestedAllMemos(data) {
-        data = JSON.parse(data)
-        console.log(data)
+        const parsedData = safeParseJSON(data)
+        
+        if (!parsedData) return
                 
-        if(data === "No results") {
-            return
-        }
+        if(parsedData === "No results") return
 
-        for(let el in data) {
-            console.log(data[el].content)
-            buildMemoP(data[el].content, data[el].id)
+        for(let el in parsedData) {
+            console.log(parsedData[el].content)
+            buildMemoP(parsedData[el].content, parsedData[el].id)
         }
     }
 }
@@ -407,17 +474,19 @@ function populateApp() {
 // FIRST FUNCTION SAVES MEMO NOTE VALUE ON CLICK WHILE SECOND FUNCTION CHECKS IF THE VALUE IS CHANGED WHEN THE NOTE LOSES FOCUS
 // IF THE VALUE IS THE SAME NOTHING HAPPENS, IF IT'S DIFFERENT THE DATABASE GETS UPDATED WITH THE NEW MEMO VALUE
 
-function saveMemoValue(value) {
-    localStorage.setItem("memoValue", value)
+function saveMemoValue() {
+    const value = $(this).text()
+    utilityVars.lastMemoValue = value
 }
 
 
 function checkMemoValueVariations(el, currentValue) {
-    if(localStorage.getItem("memoValue") != currentValue && currentValue != "") {
-        return true
-    }
     if(currentValue === "") {
-       deleteMemo([el[0].id])
+        deleteMemo([el[0].id])
+        return
+    }
+    if(utilityVars.lastMemoValue != currentValue) {
+        return true
     }
 }
 
@@ -443,9 +512,7 @@ function tapStart(el) {
         return
     }
 
-    if(utilityVars.itemsSelected != true) {
-        detectDoubleClick(el)
-    }
+    detectDoubleClick(el)
 
     utilityVars.timer = setTimeout(() => {
         utilityVars.timer = null
@@ -465,20 +532,17 @@ function clearTimer() {
 
 function tapEnd(el) {
     clearTimer()
-    const isLongPressed = utilityVars.longPress
-    const itemsSelected = utilityVars.itemsSelected
+    const {longPress, itemsSelected} = utilityVars
 
     //remove event attached on tapStart
     $(this).off("touchmove mousemove")
 
     //DO NOTHING ON LONGPRESS WHILE THERE ARE NOTES SELECTED
-    if(isLongPressed === true && itemsSelected === true) {
-        return
-    }
+    if (longPress && itemsSelected) return;
 
 
     //IF LONG PRESS TRIGGERED
-    if(isLongPressed === true) {
+    if(longPress) {
         console.log("TRUUUUUE")
         utilityVars.itemsSelected = true
         return
@@ -486,7 +550,7 @@ function tapEnd(el) {
 
 
     //TRIGGERED IF THERE'S ALREADY AT LEAST ONE MEMO NOTE SELECTED ON CLICK
-    if(itemsSelected === true) {
+    if(itemsSelected) {
         console.log("YUPPI")
         console.log("was checked : " + el.find("input").is(":checked"))
         if(el.attr("data-selected") === "false") {
@@ -565,15 +629,6 @@ function hideRegistrationForm() {
     $("#deleteBtn").show()
 }
 
-
-
-
-function setCursorAtInputEnd(input) {
-    let sel = window.getSelection();
-    sel.selectAllChildren(input);
-    sel.collapseToEnd();
-}
-
 function logOut() {
     ajaxGetRequest("userOperations.php?action=logout", () => location.reload())
 }
@@ -609,7 +664,7 @@ function formatProfileInfos() {
 //RECORDING FUNCTIONS
 
 function recStart() {
-    startRegistration()
+    startRecording()
     $(document).on("mouseup touchend", recEnd)
 }
 
@@ -617,7 +672,7 @@ function recEnd(e) {
     //prevent context menu popup on long press
     e.preventDefault()
 
-    stopRegistration()
+    stopRecording()
     $(document).off("mouseup touchend", recEnd)
 }
 
@@ -626,103 +681,74 @@ function recEnd(e) {
 
 // TOGGLE RECORDING FUNCTIONS
 
-function startRegistration() {
+function startRecording() {
     utilityVars.timer = setTimeout(() => {
-      utilityVars.timer = null
-      $("#btnMic").css("transform", "scale(1.25)")
-      localStorage.setItem("speech", "")
-      toggleRecording()
+        utilityVars.timer = null
+        $("#btnMic").css("transform", "scale(1.25)")
+        toggleSpeechRecognition()
     }, 750)
 }
   
-function stopRegistration() {
+function stopRecording() {
     clearTimer()
-    if(recording === null) {
-        return
-    }
-    toggleRecording()
+    if(!utilityVars.recording) return
+
+    toggleSpeechRecognition()
     setTimeout(() => {
-        if(localStorage.getItem("speech") === "") {
-            console.log("NO TEXT")
+        if(utilityVars.speech === "") {
+            console.log("NO TEXT RECORDED")
             return
         }
-        //$("#results").html(localStorage.getItem("speech"))
-        createMemo(localStorage.getItem("speech"))
-        //console.log(localStorage.getItem("speech"))
+        createMemo(utilityVars.speech)
     },500)
     $("#btnMic").css("transform", "scale(1)")
 }
 
 
-
-
-
-window.SpeechRecognition = window.SpeechRecognition ||
-window.webkitSpeechRecognition;
-
-let recognition = new window.SpeechRecognition()
-let recording = null;
-let results = null;
-
-recognition.continuous = true;
-recognition.lang = "it-IT"
-
-function toggleRecording() {
-  if(recording) {
-    recognition.onend = null
-    recognition.stop()
-    recording = null
+function toggleSpeechRecognition() {
+  if(utilityVars.recording) {
+    utilityVars.recognitionObj.onend = null
+    utilityVars.recognitionObj.stop()
+    utilityVars.recording = null
   } else {
-    recognition.onend = onEnd
-    recognition.start()
-    recording = true
+    utilityVars.recognitionObj.onend = continueRecognitionOnEnd
+    utilityVars.recognitionObj.start()
+    utilityVars.recording = true
   }
 }
 
-function onEnd() {
+function continueRecognitionOnEnd() {
   //Prevent mic recording to stop on its own after a few seconds
   console.log('Speech recognition has stopped. Starting again ...')
-  recognition.start()
+  utilityVars.recognitionObj.start()
 }
 
 
 function onSpeak(e) {
-  results = e.results;
-  //console.log(e.results[e.results.length-1][0].transcript)
-  let text = localStorage.getItem("speech") + e.results[e.results.length-1][0].transcript
-  localStorage.setItem("speech", text)
+  utilityVars.results = e.results;
+  utilityVars.speech += e.results[e.results.length-1][0].transcript
 }
 
-recognition.addEventListener('result', onSpeak)
+utilityVars.recognitionObj.addEventListener('result', onSpeak)
 
 
 function detectDoubleClick(el) {
     
     let timeout = setTimeout(() => {
         utilityVars.dblClickTime = 0
-        //localStorage.setItem("dblClickTime", 0)
-        console.log("Time passed")
         clearTimeout(timeout)
     },750)
 
-    //let dblClickTime = Number(localStorage.getItem("dblClickTime"))
-    let dblClickTime = Number(utilityVars.dblClickTime)
-    if(dblClickTime === 0) {
-        //localStorage.setItem("dblClickTime", new Date().getTime())
-        utilityVars.dblClickTime = new Date().getTime()
-        utilityVars.clickedMemoId = el[0].id
-        //localStorage.setItem("memoClicked", el[0].id)
-        return
+    if (utilityVars.dblClickTime === 0) {
+        utilityVars.dblClickTime = new Date().getTime();
+        utilityVars.clickedMemoId = el[0].id;
+        return;
     }
 
-    if((new Date().getTime() - dblClickTime) < 750 && utilityVars.clickedMemoId === el[0].id) {//localStorage.getItem("memoClicked") === el[0].id) {
-        utilityVars.dblClickTime = 0
-        //localStorage.setItem("dblClickTime", 0)
-        console.log("double click")
-        //console.log(localStorage.getItem("memoClicked"))
-        console.log(el[0].id)
-        el[0].contentEditable = "true"
-        el[0].focus()
+    if ((new Date().getTime() - utilityVars.dblClickTime) < 750 &&
+        utilityVars.clickedMemoId === el[0].id) {
+        utilityVars.dblClickTime = 0;
+        el.attr("contentEditable", "true").focus();
     }
 }
 

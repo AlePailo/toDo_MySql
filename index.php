@@ -86,11 +86,11 @@
         </article>
 
         <!-- DELETION CONFIRMATION POPUP -->
-        <dialog id="confirmDeletion">
+        <dialog id="askDeletionConfirmation">
             <p>Eliminare le note selezionate ?</p>
             <p>
-                <span>Annulla</span>
-                <span>Conferma</span>
+                <span id="cancelDeletion">Annulla</span>
+                <span id="confirmDeletion">Conferma</span>
             </p>
         </dialog>
 

@@ -24,13 +24,13 @@
             </div>
 
             <!--Profile infos popup (position absolutely to the nav menu)-->
-            <div id="profileInfos">
+            <dialog id="profileInfos">
                 <div>
                     <p></p>
                     <p></p>
                 </div>
                 <button id="btnLogOut">Esci</button>
-            </div>
+            </dialog>
         </article>
 
         <!-- LOGIN FORM -->
@@ -86,7 +86,7 @@
         </article>
 
         <!-- DELETION CONFIRMATION POPUP -->
-        <dialog id="askDeletionConfirmation">
+        <dialog class="centeredDialog" id="askDeletionConfirmation">
             <p>Eliminare le note selezionate ?</p>
             <p>
                 <span id="cancelDeletion">Annulla</span>
@@ -95,7 +95,7 @@
         </dialog>
 
         <!-- HELPBOX POPUP -->
-        <dialog id="helpBox">
+        <dialog class="centeredDialog" id="helpBox">
             <ul>
                 <li>
                     <h3>MODIFICARE UNA NOTA</h3>

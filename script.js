@@ -1,19 +1,37 @@
 $(document).ready(function() {
-    
-    //CHECKING IF THE USER IS LOGGED IN
-    displayBasedOnCookie()
+    displayBasedOnCookie()          // CHECKING IF THE USER IS LOGGED IN
+    setupEvents()                   // BIND ALL EVENTS TO ELEMENTS
+})
 
+//GLOBALLY ACCESSIBLE VARIABLES KEPT IN THIS OBJECT TO AVOID POSSIBLE NAME CONFLICTS AND GLOBAL NAMESPACE POLLUTION
+const utilityVars = {
+    timer : null,               //used to recognize a long press (held tap for more than 0.5s)
+    itemsSelected : false,      //set to true if there's at least one memo selected
+    longPress : false,          //set to true if the last click was a long press
+    dblClickTime : 0,           //used to recognize a double click (two clicks on same memo in less than 0.75 sec)
+    clickedMemoId : null,        //used to track last clicked memo (useful to recognize double click on same memo)
+    recognitionObj : new (window.SpeechRecognition || window.webkitSpeechRecognition)(),
+    recording : null,
+    results : null,
+    speech : "",
+    lastMemoValue : ""          //used to check if memo's value has changed
+}
 
+utilityVars.recognitionObj.continuous = true;
+utilityVars.recognitionObj.lang = "it-IT"
+
+function setupEvents() {
     //NAVBAR EVENTS
     $(document).on("click", "#helpBtn", () => $("#helpBox")[0].showModal())
     $(document).on("click", "#btnCloseHelpBox", () => $("#helpBox")[0].close())
-    $(document).on("click", "#profileBtn", toggleProfileInfos)
+    //$(document).on("click", "#profileBtn", toggleProfileInfos)
+    $(document).on("click", "#profileBtn", () => $("#profileInfos")[0].showModal())
     $(document).on("click", "#btnLogOut", logOut)
     $(document).on("click", "#backBtn", handleBackBtnClick)
     $(document).on("click", "#deleteBtn", () => $("#askDeletionConfirmation")[0].showModal())
 
     //DELETION POPUP EVENTS
-    $(document).on("click", "#askDeletionConfirmation", closeDialogOnBackdropClick)
+    $(document).on("click", "dialog[open]", closeDialogOnBackdropClick)
     $(document).on("click", "#cancelDeletion", function() {
         $("#askDeletionConfirmation")[0].close()
         resetSelection()
@@ -42,139 +60,7 @@ $(document).ready(function() {
     $(document).on("click", "#btnRegistration", tryRegistration)
     $(document).on("submit", "#registrationForm", () => {location.reload()})
     $(document).on("focus", "input", () => $("#formNotification").hide())
-
-    //PROVARE !
-    //const target = e.target.id ?? e.target.parentElement.id   -> gestisce solo null e undefined
-    //const target = e.target.id || e.target.parentElement.id   -> dovrebbe gestire anche 0 e ""  
-
-
-
-    //$(document).on("pointerup", ".memoNote", checkPointerType)
-
-
-    //$("#profileBtn").click(toggleProfileInfos)
-
-    /*
-
-    //(?) icon press => open help box popup
-    $("#helpBtn").click(() => $("#helpBox")[0].showModal())
-
-    //close help box on its close button press
-    $("#btnCloseHelpBox").click(() => $("#helpBox")[0].close())
-
-    //profile icon press => toggle profile infos popup
-    
-
-    //profile infos popup button press => logout
-    $("#btnLogOut").click(logOut)
-
-    //back arrow icon events
-    $("#backBtn").click(handleBackBtnClick)
-
-    //deletion icon press => brings confirm deletion popup 
-    $("#deleteBtn").click(() => $("#askDeletionConfirmation")[0].showModal())//$("#askDeletionConfirmation").css("display", "flex"))
-    */
-
-
-    
-
-    //Mic icon press
-    //$("#btnMic").on("mousedown touchstart", recStart)
-
-
-    //send icon press => create memo with input text
-    /*$("#btnSend").click(function() {
-        createMemo($("#userInput").val())
-        $("#userInput").val("")
-    })*/
-
-    
-
-
-
-    
-
-    //deletion popup left option press => cancel memo deletion
-    /*$("#cancelDeletion").click(function() {
-        $("#askDeletionConfirmation")[0].close()
-        resetSelection()
-    })*/
-    
-
-    //confirm deletion popup right option press => confirm memo deletion
-    //$("#confirmDeletion").click(performDeletion)
-
-
-
-    //NOTES DISPLAY ZONE EVENTS
-
-    //single click on memo
-    /*$(".addedElements").on("click", "p", saveMemoValue)*/
-    
-    //memo out of focus
-    //$(".addedElements").on("blur", "p", updateMemo)
-
-
-
-    //MEMO CLICK EVENTS BASED ON POINTER TYPE (mouse or touch)
-
-    /*$(".addedElements").on("pointerdown", ".memoNote", checkPointerType)
-
-    $(".addedElements").on("pointerup", ".memoNote", checkPointerType)*/
-
-    
-    //HIDE FORM ERRORS NOTIFICATIONS WHEN CLICKING ON AN INPUT FIELD
-    /*$("input").focus(function() {
-        $("#formNotification").hide()
-    })*/
-
-    //LINK FROM LOGIN FORM TO REGISTRATION FORM CLICK
-    /*$("#linkToRegistration").click(function() {
-        showRegistrationForm()
-        hideLoginForm()
-    })*/
-    
-
-    
-
-
-    //INPUTS' ICONS CLICK EVENT 
-    //$(".identification").find("input ~ span").click(focusSiblingInput)
-
-    //LOGIN FORM BUTTON CLICK EVENT
-    //$("#btnLogin").click(tryLogin)
-
-    //REGISTRATION FORM BUTTON CLICK EVENT
-    //$("#btnRegistration").click(tryRegistration)
-
-
-    //REGISTRATION SUBMIT EVENT (triggered by #btnRegistration after successful validation)
-    /*$("#registrationForm").submit(function() {
-        location.reload()
-    })*/
-
-    //$("#askDeletionConfirmation").on('click', closeDialogOnBackdropClick)
-
-
-})
-
-//GLOBALLY ACCESSIBLE VARIABLES KEPT IN THIS OBJECT TO AVOID POSSIBLE NAME CONFLICTS AND GLOBAL NAMESPACE POLLUTION
-const utilityVars = {
-    timer : null,               //used to recognize a long press (held tap for more than 0.5s)
-    itemsSelected : false,      //set to true if there's at least one memo selected
-    longPress : false,          //set to true if the last click was a long press
-    dblClickTime : 0,           //used to recognize a double click (two clicks on same memo in less than 0.75 sec)
-    clickedMemoId : null,        //used to track last clicked memo (useful to recognize double click on same memo)
-    recognitionObj : new (window.SpeechRecognition || window.webkitSpeechRecognition)(),
-    recording : null,
-    results : null,
-    speech : "",
-    lastMemoValue : ""          //used to check if memo's value has changed
 }
-
-utilityVars.recognitionObj.continuous = true;
-utilityVars.recognitionObj.lang = "it-IT"
-
 
 
 function closeDialogOnBackdropClick(e) {
@@ -219,9 +105,7 @@ function focusSiblingInput() {
 
 
     //return if it's not the passowrd field (detected by not having an icon with the "data-cover" attribute)
-    if(typeof imgDataCover === "undefined" || typeof imgDataCover === false) {
-        return
-    }
+    if(typeof imgDataCover === "undefined" || typeof imgDataCover === false) return
 
     //set caret after last input character and toggle show/hide password field value
     setCursorAtInputEnd(input[0])
@@ -245,39 +129,6 @@ function togglePswVisibility(span) {
     })
     pswInput.attr("type", isPswHidden ? "text" : "password")
 }
-
-
-function toggleProfileInfos(e) {
-    e.stopPropagation()
-    const profileBtnIcon = $("#profileBtn").find("img")[0]
-    const profileInfosContainer = $("#profileInfos")
-
-    // Se clicchiamo sull'icona, alterniamo la visibilità
-    if (e.target === profileBtnIcon) {
-        const isContainerHidden = profileInfosContainer.css("display") === "none";
-        setProfileInfosVisibility(isContainerHidden);
-        return;
-    }
-
-    // Se clicchiamo fuori, chiudiamo il contenitore
-    if (!profileInfosContainer.is(e.target) && profileInfosContainer.has(e.target).length === 0) {
-        setProfileInfosVisibility(false);
-    }
-}
-
-// Funzione per gestire la visibilità del contenitore
-function setProfileInfosVisibility(isContainerHidden) {
-    const profileInfosContainer = $("#profileInfos");
-
-    if (isContainerHidden) {
-        profileInfosContainer.css("display", "flex")
-        //$(document).on("click", toggleProfileInfos);
-    } else {
-        profileInfosContainer.css("display", "none")
-        //$(document).off("click", toggleProfileInfos);
-    }
-}
-
 
 
 function checkPointerType(e) {
@@ -495,35 +346,34 @@ function checkMemoValueVariations(el, currentValue) {
 //LONG TAP LOGIC
 
 function tapStart(el) {
-
     //prevent long press trigger if leaving the memo with cursor
     $(this).on("touchmove mousemove", function() {
-        tapEnd($(this))
+        tapEnd(el)
     })
 
-    if($("#profileInfos").css("display") === "flex") {
+    /*if($("#profileInfos").css("display") === "flex") {
         $("#profileInfos").hide()
-    }
+    }*/
 
     //if there are notes selected ignore double click and long press behaviours
     utilityVars.longPress = false
 
-    if(utilityVars.itemsSelected === true) {
-        return
-    }
+    if (utilityVars.itemsSelected) return;
 
     detectDoubleClick(el)
 
-    utilityVars.timer = setTimeout(() => {
-        utilityVars.timer = null
-        $("#navProfile").hide()
-        $("#navOptions").css("display", "flex")
-        $(".memoNote").find("div").show()
-        el.attr("data-selected", true)
-        el.find("div").css("background", "url(media/icons/checkIcon2.svg)")
-        utilityVars.longPress = true
-        $("#userInput, #btnMic").click(resetSelection)
-    }, 500)
+    utilityVars.timer = setTimeout(() => handleLongPress(el), 500)
+}
+
+function handleLongPress(el) {
+    utilityVars.timer = null
+    $("#navProfile").hide()
+    $("#navOptions").css("display", "flex")
+    $(".memoNote").find("div").show()
+    el.attr("data-selected", true)
+    el.find("div").css("background", "url(media/icons/checkIcon2.svg)")
+    utilityVars.longPress = true
+    $("#userInput, #btnMic").click(resetSelection)
 }
 
 function clearTimer() {
@@ -560,14 +410,9 @@ function tapEnd(el) {
         }
         el.attr("data-selected", false)
         el.find("div").css("background", "#fffff2")
-        let checks = 0
-        $(".memoNote").each(function(index, value) {
-            if($(this).attr("data-selected") === "true") {
-                checks++
-                console.log("check n" + index)
-            }
-        })
-        if(checks == 0) {
+
+        const selectedCount = $(".memoNote[data-selected='true']").length
+        if (selectedCount === 0) {
             utilityVars.itemsSelected = false
             resetSelection()
         }

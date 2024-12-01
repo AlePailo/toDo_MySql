@@ -122,22 +122,21 @@ svg {
 }
 
 #profileInfos {
-    position: absolute;
+    /* adjustments since dialog element is positioned referring to window */
+    left: calc(50% + var(--container-width) / 2);
+    top: 8%;
+    transform: translateX(-100%);
+
     width: 300px;
     text-overflow: ellipsis;
-    top: 80%;
-    right: 2.5%;
-    padding: 1em;
-    border-radius: 10px;
     text-align: center;
     font-size: 1.5em;
-    border: 1px solid var(--main-char-color);
-    background: var(--secondary-bg);
-    flex-direction: column;
-    align-content: center;
-    justify-content: center;
-    gap: 0.75em;
-    display: none;
+}
+
+#btnLogOut {
+    margin-top: 1rem;
+    outline: 0;
+    padding: 0.1rem;
 }
 
 
@@ -300,26 +299,29 @@ svg {
 
 /* POPUP ELEMENTS */
 dialog {
+    padding: 1rem;
+    border-radius: 10px;
+    background: var(--secondary-bg);
+    outline: 1px solid var(--main-char-color);
+    color: var(--main-char-color);
+    outline: 0;
+    border: 1px solid var(--main-char-color);
+}
+
+.centeredDialog {
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    border-radius: 10px;
-    background: var(--secondary-bg);
-    border: none;
-    color: var(--main-char-color);
-    outline: 0;
 }
 
-dialog::backdrop {
+.centeredDialog::backdrop {
     background: rgba(0,0,0,0.5);
 }
 
 #helpBox {
-    position: fixed;
+    /*position: fixed;*/
     width: calc(80 / 100 * var(--container-width));
     height: 80vh;
-    border: 1px solid var(--main-char-color);
-    padding: 1rem;
     overflow-y: hidden;
 }
 
@@ -361,15 +363,9 @@ dialog::backdrop {
 
 #askDeletionConfirmation {
     width: min(80%, 500px);
-    position: absolute;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 15%;
-    padding-top: 1.5em;
-}
-
-#askDeletionConfirmation:modal {
-    display: flex;
+    /*position: absolute;*/
+    padding: 1rem 0 0 0;
+    border: none;
 }
 
 #askDeletionConfirmation p:first-of-type {
@@ -378,6 +374,7 @@ dialog::backdrop {
 }
 
 #askDeletionConfirmation p:last-of-type {
+    margin-top: 1rem;
     display: flex;
 }
 
